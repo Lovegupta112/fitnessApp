@@ -67,4 +67,49 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { signup, login };
+const updateUserInfo = async (req, res) => {
+  try {
+    const {
+      username,
+      email,
+      phone,
+      gender,
+      bloodgroup,
+      adharcard,
+      age,
+      weight,
+      userid,
+    } = req.body;
+    const updateQuery = ` UPDATE users
+      SET username=$1 , email=$2 , phone=$3,gender=$4,bloodgroup=$5,adharcard=$6,age=$7,weight=$8
+      WHERE userid=$9 
+     `;
+    const updateUser = await query(updateQuery, [
+      username,
+      email,
+      phone,
+      gender,
+      bloodgroup,
+      adharcard,
+      age,
+      weight,
+      userid,
+    ]);
+    console.log(updateUser);
+    res.status(200).json({ message: `update user with email ${email}` });
+  } catch (error) {
+    console.log("Error: ", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    res.status(200).clearCookie("jwt").send("logout");
+  } catch (error) {
+    console.log("Error: ", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { signup, login, updateUserInfo, logout };

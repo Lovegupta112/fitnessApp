@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
    gender VARCHAR(10),
    phone VARCHAR(20) NOT NULL,
    password VARCHAR(255) NOT NULL,
-   adharCardNo VARCHAR(12) UNIQUE,
+   adharCard VARCHAR(12) UNIQUE,
    bloodGroup VARCHAR(3),
    age INT,
    weight VARCHAR(20),

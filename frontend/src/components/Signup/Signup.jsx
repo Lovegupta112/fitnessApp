@@ -5,7 +5,11 @@ import { Box, Stack, TextField, InputAdornment, Typography, Button } from "@mui/
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import './style.css';
+import {useDispatch } from "react-redux";
+import {signup} from '../../app/features/userSlice';
 
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
+axios.defaults.withCredentials=true;
 const defaultUser = {
   name: "",
   email: "",
@@ -17,8 +21,8 @@ const Signup = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [err, setErr]= useState('');
   const navigate = useNavigate();
+  const dispatch=useDispatch();
 
-  axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
   const handleChange = (event) => {
     const name = event.target.name;
@@ -60,8 +64,9 @@ const Signup = () => {
     console.log(userInfo);
     setUserInfo(defaultUser);
     try {
-      const res = await axios.post("/users/signup", userInfo);
+      const res = await axios.post("/users/signup", userInfo,{withCredentials:true});
       console.log(res.data);
+      dispatch(signup(res.data));
     } catch (error) {
       console.log("Error: ", error);
       setErr(error?.response.data.Error);
