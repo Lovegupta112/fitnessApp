@@ -11,9 +11,11 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useDispatch } from "react-redux";
-import {login} from '../app/features/userSlice';
+import { login } from "../app/features/userSlice";
+import { setAuthentication } from "../app/features/authSlice";
+
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
-axios.defaults.withCredentials=true;
+axios.defaults.withCredentials = true;
 
 const defaultValue = {
   email: "",
@@ -25,7 +27,7 @@ const Login = () => {
   const [err, setErr] = useState("");
 
   const navigate = useNavigate();
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
 
   const loginUser = async () => {
     setErr("");
@@ -40,9 +42,12 @@ const Login = () => {
 
     setLoginInfo(loginInfo);
     try {
-      const res = await axios.post("/users/login", loginInfo,{withCredentials:true});
+      const res = await axios.post("/users/login", loginInfo, {
+        withCredentials: true,
+      });
       console.log(res.data);
       dispatch(login(res.data));
+      dispatch(setAuthentication(res.data.token));
     } catch (error) {
       console.log("Error: ", error);
       setErr(error?.response?.data.message);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -12,33 +12,48 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import { useSelector, useDispatch } from "react-redux";
+import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import CustomDropdown from "../common/CustomDropdown";
+import { setCurrentActivity } from "../../app/features/activitySlice";
 
-
-const MeasurePerformance = ({ createItem, itemName, btnText }) => {
+const MeasurePerformance = () => {
   const [expanded, setExpanded] = useState(false);
-  const [name, setName] = useState("");
+  const [selectedActivities, setSelectedActivities] = useState([]);
+  const activity = useSelector((state) => state.activity);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // setSelectedActivities(activity.selectedActivity);
+    setActivity(activity.selectedActivity);
+  }, [activity.selectedActivity]);
+
+  const setActivity = (activities) => {
+    let activityArr = [];
+    for (let activity in activities) {
+      const isSelected = activities[activity];
+      if (isSelected) {
+        activityArr.push(activity);
+      }
+    }
+    setSelectedActivities(activityArr);
+    if (
+      activityArr.length <= 0 ||
+      !activityArr.includes(activity.currentActivity.activityName)
+    ) {
+      console.log("empty arr: ", activityArr);
+      dispatch(setCurrentActivity({}));
+    }
+  };
+
+  console.log(selectedActivities);
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  function handleClose() {
-    setExpanded(false);
-    setName("");
-  }
-
-  function handleCreate() {
-    if (name) {
-      createItem(name);
-      setExpanded(false);
-      setName("");
-    }
-  }
-
   return (
-    <Box>
+    <Box sx={{ width: "100%" }}>
       <Accordion
         expanded={expanded === "panel1"}
         onChange={handleChange("panel1")}
@@ -48,25 +63,48 @@ const MeasurePerformance = ({ createItem, itemName, btnText }) => {
           <Button
             startIcon={<LeaderboardIcon />}
             sx={{
-              width: 'fit-content',
+              width: "fit-content",
               height: "fit-content",
               wordBreak: "break-word",
-              color: "#55efc4",
+              color: "black",
               fontSize: "1.2rem",
-              border:'1px solid #55efc4'
+              border: "1px solid #1dd1a1",
+              backgroundColor: "#1dd1a1",
+              "&:hover": {
+                backgroundColor: "#1dd1a1",
+              },
             }}
           >
             {/* {expanded ? `Enter ${itemName} Name` : `Add  ${itemName}`} */}
             Measure Performance
           </Button>
         </AccordionSummary>
-        <AccordionDetails sx={{paddingLeft:'2rem'}}>
-        <Typography>Please Select Your Favorite Activity from Favorite Section ... </Typography>
-        <Stack direction='row' gap={2}>
-        <CustomDropdown name='Your Favorite Activity'/>
-        <CustomDropdown name='Unit'/>
-        <CustomDropdown name='Distance'/>
-        </Stack>
+        <AccordionDetails
+          sx={{ padding: "2rem", boxShadow: "1px 1px 4px grey", width: "100%" }}
+        >
+          {selectedActivities.length <= 0 ? (
+            <Typography>
+              Please Select Your Favorite Activity from Favorite Section ...{" "}
+            </Typography>
+          ) : (
+            <Stack direction="row" gap={2}>
+              <CustomDropdown
+                name="Your Favorite Activity"
+                menuItems={selectedActivities}
+                id="activityName"
+              />
+              <CustomDropdown
+                name="Unit"
+                menuItems={["mts", "kms"]}
+                id="unit"
+              />
+              <CustomDropdown
+                name="Distance"
+                menuItems={[0.5, 1, 2, 3, 4, 5, 10, 15, 20]}
+                id="distance"
+              />
+            </Stack>
+          )}
         </AccordionDetails>
       </Accordion>
     </Box>

@@ -3,7 +3,7 @@ import './App.css';
 import Signup from "./components/Signup/Signup";
 import Login from './components/Login';
 import Homepage from './pages/Homepage';
-import Protected from './components/Protected';
+import Protected from './util/Protected';
 import Header from './components/Header';
 import Dashboard from './pages/Dashboard';
 import ProfilePage from './pages/ProfilePage';

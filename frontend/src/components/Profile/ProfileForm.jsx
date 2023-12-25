@@ -1,4 +1,4 @@
-import { useState ,useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -12,12 +12,13 @@ import {
   FormControlLabel,
   RadioGroup,
 } from "@mui/material";
-import { useSelector ,useDispatch  } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateUserInfo } from "../../app/features/userSlice";
 // import './style.css';
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 const defaultUser = {
-  userid:"",
+  userid: "",
   username: "",
   email: "",
   phone: "",
@@ -29,28 +30,28 @@ const defaultUser = {
 };
 const ProfileForm = () => {
   const [userInfo, setUserInfo] = useState(defaultUser);
-  const [err, setErr] = useState('');
+  const [err, setErr] = useState("");
   const navigate = useNavigate();
 
- const user=useSelector((state)=>state.user);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
- useEffect(()=>{
-  let userData={};
-  for(let info in user){
-    let value=user[info];
-    if(value){
-      userData[info]=value;
+  useEffect(() => {
+    let userData = {};
+    for (let info in user) {
+      let value = user[info];
+      if (value) {
+        userData[info] = value;
+      }
     }
-  }
- setUserInfo({...userInfo,...userData});
-  // setUserInfo(user);
- },[user]);
-
+    setUserInfo({ ...userInfo, ...userData });
+    // setUserInfo(user);
+  }, [user]);
 
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    setErr('');
+    setErr("");
     if (name === "username") {
       setUserInfo({ ...userInfo, username: value });
     } else if (name === "email") {
@@ -68,24 +69,36 @@ const ProfileForm = () => {
     } else if (name === "weight") {
       setUserInfo({ ...userInfo, weight: value });
     }
-     setErr('');
+    setErr("");
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setErr('');
-    if (!userInfo.username.trim() || !userInfo.email.trim() || !userInfo.phone.trim() || !userInfo.gender || !userInfo.age || !userInfo.weight?.trim() || !userInfo.bloodgroup?.trim() || (!userInfo.adharcard || userInfo.adharcard.length!=12 || isNaN(userInfo.adharcard))) {
-      setErr('error');
+    setErr("");
+    if (
+      !userInfo.username.trim() ||
+      !userInfo.email.trim() ||
+      !userInfo.phone.trim() ||
+      !userInfo.gender ||
+      !userInfo.age ||
+      !userInfo.weight?.trim() ||
+      !userInfo.bloodgroup?.trim() ||
+      !userInfo.adharcard ||
+      userInfo.adharcard.length != 12 ||
+      isNaN(userInfo.adharcard)
+    ) {
+      setErr("error");
       return;
     }
-    setErr('');
+    setErr("");
     // console.log({userInfo});
     try {
       const res = await axios.put("/users/updateInfo", userInfo);
-      console.log(res.data);
+      console.log(res?.data);
+      dispatch(updateUserInfo(res?.data?.user));
     } catch (error) {
       console.log("Error: ", error);
-      setErr(error?.response.data.Error);
+      setErr(error?.response?.data?.Error);
       throw error;
     }
     // navigate("/activity");
@@ -106,7 +119,7 @@ const ProfileForm = () => {
       gap={2}
     >
       <form method="post" onSubmit={handleSubmit}>
-        <Stack direction="row" gap={6} >
+        <Stack direction="row" gap={6}>
           <Stack gap={1}>
             <label htmlFor="username">Name</label>
             <TextField
@@ -116,8 +129,10 @@ const ProfileForm = () => {
               placeholder="Enter Your name"
               value={userInfo.username}
               onChange={handleChange}
-              error={(err && !userInfo.username ) ? true : false}
-              helperText={(err && !userInfo.username ) ? "Please Fill the name !" : ""}
+              error={err && !userInfo.username ? true : false}
+              helperText={
+                err && !userInfo.username ? "Please Fill the name !" : ""
+              }
             />
           </Stack>
           <Stack gap={1}>
@@ -129,9 +144,9 @@ const ProfileForm = () => {
               placeholder="Enter Your email"
               value={userInfo.email}
               onChange={handleChange}
-              error={(err && !userInfo.email )? true : false}
+              error={err && !userInfo.email ? true : false}
               helperText={
-                (err && !userInfo.email ) ? "Please Fill the email !" : ""
+                err && !userInfo.email ? "Please Fill the email !" : ""
               }
             />
           </Stack>
@@ -144,9 +159,9 @@ const ProfileForm = () => {
               placeholder="Enter Your phone"
               value={userInfo.phone}
               onChange={handleChange}
-              error={(err && !userInfo.phone )? true : false}
+              error={err && !userInfo.phone ? true : false}
               helperText={
-                (err && !userInfo.phone )? "Please Fill the phone !" : ""
+                err && !userInfo.phone ? "Please Fill the phone !" : ""
               }
             />
           </Stack>
@@ -160,7 +175,6 @@ const ProfileForm = () => {
               name="gender"
               value={userInfo.gender}
               onChange={handleChange}
-              
             >
               <FormControlLabel
                 value="female"
@@ -184,8 +198,12 @@ const ProfileForm = () => {
               placeholder="Enter your Blood Group"
               value={userInfo.bloodgroup}
               onChange={handleChange}
-              error={(err && !userInfo.bloodgroup )? true : false}
-              helperText={(err && !userInfo.bloodgroup )? "Please Fill your Blood group !" : ""}
+              error={err && !userInfo.bloodgroup ? true : false}
+              helperText={
+                err && !userInfo.bloodgroup
+                  ? "Please Fill your Blood group !"
+                  : ""
+              }
             />
           </Stack>
           <Stack gap={1}>
@@ -197,8 +215,16 @@ const ProfileForm = () => {
               placeholder="Enter Your Adhar Card No"
               value={userInfo.adharcard}
               onChange={handleChange}
-              error={(err && (!userInfo.adharcard ||  userInfo.adharcard.length!=12) )?true:false}
-              helperText={(err &&  (!userInfo.adharcard ||  userInfo.adharcard.length!=12) )?"Please Fill Right AdharCard No":''}
+              error={
+                err && (!userInfo.adharcard || userInfo.adharcard.length != 12)
+                  ? true
+                  : false
+              }
+              helperText={
+                err && (!userInfo.adharcard || userInfo.adharcard.length != 12)
+                  ? "Please Fill Right AdharCard No"
+                  : ""
+              }
             />
           </Stack>
         </Stack>
@@ -213,8 +239,8 @@ const ProfileForm = () => {
               placeholder="Enter your Age"
               value={userInfo.age}
               onChange={handleChange}
-              error={(err && !userInfo.age ) ? true : false}
-              helperText={(err && !userInfo.age ) ? "Please Fill the age !" : ""}
+              error={err && !userInfo.age ? true : false}
+              helperText={err && !userInfo.age ? "Please Fill the age !" : ""}
             />
           </Stack>
           <Stack gap={1}>
@@ -226,8 +252,10 @@ const ProfileForm = () => {
               placeholder="Enter Your Weight"
               value={userInfo.weight}
               onChange={handleChange}
-              error={(err && !userInfo.weight ) ? true : false}
-              helperText={(err && !userInfo.weight ) ? "Please Fill the weight !" : ""}
+              error={err && !userInfo.weight ? true : false}
+              helperText={
+                err && !userInfo.weight ? "Please Fill the weight !" : ""
+              }
             />
           </Stack>
         </Stack>

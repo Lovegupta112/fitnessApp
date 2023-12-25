@@ -82,7 +82,7 @@ const updateUserInfo = async (req, res) => {
     } = req.body;
     const updateQuery = ` UPDATE users
       SET username=$1 , email=$2 , phone=$3,gender=$4,bloodgroup=$5,adharcard=$6,age=$7,weight=$8
-      WHERE userid=$9 
+      WHERE userid=$9 RETURNING *
      `;
     const updateUser = await query(updateQuery, [
       username,
@@ -95,8 +95,8 @@ const updateUserInfo = async (req, res) => {
       weight,
       userid,
     ]);
-    console.log(updateUser);
-    res.status(200).json({ message: `update user with email ${email}` });
+    console.log(updateUser.rows[0]);
+    res.status(200).json({ message: `update user with email ${email}` ,user:updateUser.rows[0] });
   } catch (error) {
     console.log("Error: ", error);
     res.status(500).json({ message: error.message });
