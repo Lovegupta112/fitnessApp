@@ -96,7 +96,12 @@ const updateUserInfo = async (req, res) => {
       userid,
     ]);
     console.log(updateUser.rows[0]);
-    res.status(200).json({ message: `update user with email ${email}` ,user:updateUser.rows[0] });
+    res
+      .status(200)
+      .json({
+        message: `update user with email ${email}`,
+        user: updateUser.rows[0],
+      });
   } catch (error) {
     console.log("Error: ", error);
     res.status(500).json({ message: error.message });

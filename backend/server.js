@@ -6,7 +6,8 @@ const cookieParser=require('cookie-parser');
 const userRouter=require('./routes/user');
 const port=process.env.PORT || 3000;
 const auth=require('./middlewares/auth');
-const protectedRouter=require('./routes/protected');
+// const protectedRouter=require('./routes/protected');
+const activityRouter=require('./routes/activity');
 
 
 app.use(express.json());
@@ -17,6 +18,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 
 app.use('/users',userRouter);
+app.use('/activity',auth,activityRouter);
 // app.use('/protected',auth,protectedRouter);
 app.listen(port,()=>{
     console.log(`Server is listening on port : ${port}`);

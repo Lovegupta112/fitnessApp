@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   selectedActivity: {},
   currentActivity: { activityName: "", distance: "", time: "", unit: "" },
+  userActivities:[],
+  dashboardActivities:[],
 };
 
 const activitySlice = createSlice({
@@ -29,9 +31,16 @@ const activitySlice = createSlice({
         //   state=initialState.currentActivity;
       }
     },
+    setUserActivities:(state,action)=>{
+      console.log("payload: ",action.payload);
+      state.userActivities.push(action.payload);
+    },
+    setDashboardActivities:(state,action)=>{
+      state.dashboardActivities.push(action.payload);
+    }
   },
 });
 
-export const { setSelectedActivity, setCurrentActivity } =
+export const { setSelectedActivity, setCurrentActivity ,setUserActivities,setDashboardActivities} =
   activitySlice.actions;
 export default activitySlice.reducer;

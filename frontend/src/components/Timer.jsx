@@ -1,13 +1,19 @@
 import { useRef, useState } from "react";
 import { Button, Stack, Typography } from "@mui/material";
+import axios from 'axios';
+import { useSelector ,useDispatch } from "react-redux";
+import { setCurrentActivity } from "../app/features/activitySlice";
+axios.defaults.baseURL=import.meta.env.VITE_BASE_URL;
 
 const defaultTimer = { hours: 0, min: 0, sec: 0 };
 const Timer = () => {
   const [timer, setTimer] = useState(defaultTimer);
   const timerRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
+  const {currentActivity}=useSelector((state)=>state.activity);
+  const dispatch=useDispatch();
 
-  console.log(timer);
+  console.log(timer,currentActivity);
   const run = () => {
     setTimer((prevTimer) => {
       let h = prevTimer.hours,
@@ -45,6 +51,30 @@ const Timer = () => {
     setTimer(defaultTimer);
     setIsPaused(false);
   };
+  const saveRecord=async()=>{
+    console.log('timer: ',timer);
+    const totalTime=calculateTime();
+    console.log('totalTime(sec): ',totalTime);
+   try{
+      
+       const token=localStorage.getItem('jwt-token');
+       dispatch(setCurrentActivity({name:'time',value:totalTime}))
+       const res=await axios.post('/activity/save',{...currentActivity,time:totalTime},{
+        headers:{
+          'Authorization':`Bearer ${token}`
+        }
+       });
+       console.log(res.data);
+   }
+   catch(error){
+    console.log('Error:',error);
+    throw error;
+   }
+  }
+
+  const calculateTime=()=>{
+    return timer.hours*3600+timer.min*60+timer.sec;
+  }
   return (
     <Stack
       gap={2}
@@ -120,7 +150,7 @@ const Timer = () => {
           </Button>
           <Button
             variant="contained"
-            onClick={pauseTimer}
+            onClick={saveRecord}
             sx={{
               backgroundColor: "orange",
               "&:hover": {

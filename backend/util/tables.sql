@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS activity(
    activityId SERIAL PRIMARY KEY,
    activityName VARCHAR(255) NOT NULL,
    distance VARCHAR(255) NOT NULL,
-   time TIME NOT NULL,
+   time VARCHAR(255) NOT NULL,
+   unit VARCHAR(100) NOT NULL,
    userid INT REFERENCES users(userId)
 );
