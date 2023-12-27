@@ -5,13 +5,23 @@ import running from "../../../public/running.jpg";
 import swimming from "../../../public/swimming.jpg";
 import walking from "../../../public/walking.jpg";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { removeDashboardActivity } from "../../app/features/activitySlice";
+import { useDispatch } from "react-redux";
 
 const Activity = ({activity}) => {
-  const activityInfo = { name: "cycling", distance: "12km", time: "1hr" };
+  const dispatch=useDispatch();
 
-  const handleClick = () => {
+  const handleClick = (activityid) => {
     console.log("activity deleted !");
+    dispatch(removeDashboardActivity({activityid}));
   };
+
+  const images={
+    cycling,
+    running,
+    swimming,
+    walking
+  }
   return (
     <Stack sx={{
         minHeight: "330px",
@@ -59,7 +69,7 @@ const Activity = ({activity}) => {
           },
         }}
         size="small"
-        onClick={handleClick}
+        onClick={()=>handleClick(activity.activityid)}
       >
         <DeleteIcon />
       </IconButton>
@@ -71,7 +81,7 @@ const Activity = ({activity}) => {
 
           padding: "0.4rem 1rem 0.2rem",
         //   border: "1px solid red",
-          backgroundImage: `url(${cycling})`,
+          backgroundImage: `url(${images[activity?.activityname]})`,
           objectFit: "cover",
           backgroundPosition: "center",
           backgroundSize: "cover",

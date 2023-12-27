@@ -1,42 +1,68 @@
-import {useState,useEffect} from 'react'
-import CustomDropdown from '../common/CustomDropdown';
-import { useSelector } from 'react-redux';
-import { Stack,Typography } from '@mui/material';
-
-
+import { useState, useEffect } from "react";
+import CustomDropdown from "../common/CustomDropdown";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  Stack,
+  Typography,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
+import { setFilterActivity } from "../../app/features/filterSlice";
 
 const FilterByActivity = () => {
+  const [selectedActivities, setSelectedActivities] = useState([]);
+  const { userActivities } = useSelector((state) => state.activity);
+  const [favoriteActivity, setFavoriteActivity] = useState("");
+  const dispatch = useDispatch();
 
-    const [selectedActivities, setSelectedActivities] = useState([]);
-    const {selectedActivity}=useSelector((state)=>state.activity);
-    console.log(selectedActivity);
+  useEffect(() => {
+    getActivities();
+  }, [userActivities]);
 
-    useEffect(()=>{
+  const getActivities = () => {
+    setSelectedActivities(
+      userActivities.map((activity) => activity.activityname)
+    );
+  };
 
-       setActivity(selectedActivity);
-    },[selectedActivity]);
+  const handleChange = (event) => {
+    console.log(event.target.value);
+    setFavoriteActivity(event.target.value);
+    dispatch(setFilterActivity(event.target.value));
+  };
 
-    const setActivity = (activities) => {
-        let activityArr = [];
-        for (let activity in activities) {
-          const isSelected = activities[activity];
-          if (isSelected) {
-            activityArr.push(activity);
-          }
-        }
-        setSelectedActivities(activityArr);
-      };
-    
   return (
     <Stack>
-         {selectedActivities.length<=0?
-           <Typography>
-           Please Select Your Favorite Activity from Favorite Section ...{" "}
-         </Typography> :
-         <CustomDropdown menuItems={selectedActivities} name='Filter By Activity'/>
-        }
+        <FormControl
+          variant="standard"
+          sx={{ m: 1, minWidth: 120, width: "200px" }}
+        >
+          <InputLabel id="select-component">Filter By Activity</InputLabel>
+          <Select
+            labelId="select-component"
+            id="demo-simple-select-standard"
+            value={favoriteActivity}
+            onChange={handleChange}
+            label="Filter By Activity"
+          >
+            <MenuItem value="" sx={{ textTransform: "capitalize" }}>
+              None
+            </MenuItem>
+            {selectedActivities?.map((activity, index) => (
+              <MenuItem
+                value={activity}
+                sx={{ textTransform: "capitalize" }}
+                key={index}
+              >
+                {activity}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
     </Stack>
-  )
-}
+  );
+};
 
 export default FilterByActivity;

@@ -4,6 +4,9 @@ import { IconButton, Stack, Typography } from "@mui/material";
 import Profile from "./Profile/Profile";
 import { useSelector, useDispatch } from "react-redux";
 import { checkAuthentication } from "../app/features/authSlice";
+import { updateUserInfo } from "../app/features/userSlice";
+import axios from "axios";
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,6 +14,7 @@ const Header = () => {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
+  console.log(isAuthenticated);
   useEffect(() => {
     // if (getJWTToken()) {
     //   setIsAuthenticated(true);
@@ -19,22 +23,46 @@ const Header = () => {
     //   setIsAuthenticated(false);
     // }
     dispatch(checkAuthentication());
-    // console.log('auth: ',auth);
+    console.log('auth: ',auth);
     if (!auth.isAuthenticated) {
       setIsAuthenticated(false);
     } else {
       setIsAuthenticated(true);
     }
+    getUserInfo();
   }, [auth]);
+
+  const getUserInfo=async()=>{
+    try{
+      const token=localStorage.getItem('jwt-token');
+      const res = await axios.get("/users/userInfo", {
+        withCredentials: true,
+        headers:{
+          'Authorization':`Bearer ${token}`
+        }
+      });
+      console.log(res.data);
+      dispatch(updateUserInfo(res.data));
+    }
+    catch(error){
+      console.log("Error: ", error);
+    }
+  }
+
+
+
   return (
     <Stack
       direction="row"
       sx={{
         height: "10vh",
+        backgroundColor:'black',
+        boxShadow:'2px 2px 10px grey',
+        color:'white'
       }}
       alignItems="center"
       justifyContent="space-between"
-      padding={1}
+      padding={2}
     >
       <Typography variant="h5" fontWeight="bold">
         FitnessApp
@@ -45,7 +73,7 @@ const Header = () => {
         sx={{
           a: {
             textDecoration: "none",
-            color: "black",
+            color: "white",
           },
         }}
         alignItems="center"

@@ -16,17 +16,24 @@ import { useSelector, useDispatch } from "react-redux";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import CustomDropdown from "../common/CustomDropdown";
 import { setCurrentActivity } from "../../app/features/activitySlice";
+import Timer from "../Timer";
 
 const MeasurePerformance = () => {
   const [expanded, setExpanded] = useState(false);
   const [selectedActivities, setSelectedActivities] = useState([]);
   const activity = useSelector((state) => state.activity);
+  const [showTimer, setShowTimer] = useState(false);
   const dispatch = useDispatch();
+  // console.log(activity.currentActivity);
 
   useEffect(() => {
     // setSelectedActivities(activity.selectedActivity);
     setActivity(activity.selectedActivity);
   }, [activity.selectedActivity]);
+
+  useEffect(()=>{
+    checkActivityInfo();
+  },[activity.currentActivity]);
 
   const setActivity = (activities) => {
     let activityArr = [];
@@ -41,12 +48,22 @@ const MeasurePerformance = () => {
       activityArr.length <= 0 ||
       !activityArr.includes(activity.currentActivity.activityName)
     ) {
-      console.log("empty arr: ", activityArr);
+      // console.log("empty arr: ", activityArr);
       dispatch(setCurrentActivity({}));
     }
   };
 
-  console.log(selectedActivities);
+  const checkActivityInfo = () => {
+    for (let name in activity.currentActivity) {
+      const value = activity.currentActivity[name];
+      console.log(name, value);
+      if (name !== "time" && !value) {
+        return setShowTimer(false);
+      }
+    }
+    setShowTimer(true);
+  };
+  // console.log(selectedActivities);
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -87,7 +104,8 @@ const MeasurePerformance = () => {
               Please Select Your Favorite Activity from Favorite Section ...{" "}
             </Typography>
           ) : (
-            <Stack direction="row" gap={2}>
+            <Stack>
+              <Stack direction="row" gap={2}>
               <CustomDropdown
                 name="Your Favorite Activity"
                 menuItems={selectedActivities}
@@ -95,14 +113,16 @@ const MeasurePerformance = () => {
               />
               <CustomDropdown
                 name="Unit"
-                menuItems={["mts", "kms"]}
+                menuItems={activity.currentActivity.activityName==='swimming' ? ["mtr"]:["Kms"]}
                 id="unit"
               />
               <CustomDropdown
                 name="Distance"
-                menuItems={[0.5, 1, 2, 3, 4, 5, 10, 15, 20]}
+                menuItems={activity.currentActivity.unit==='Kms'?[0.5, 1, 2, 3, 4, 5, 10, 15, 20]:[100,200,300,400,500,600,1000]}
                 id="distance"
               />
+            </Stack>
+            {showTimer && <Timer />}
             </Stack>
           )}
         </AccordionDetails>

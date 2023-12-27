@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector ,useDispatch} from "react-redux";
 import axios from "axios";
+import { checkAuthentication } from "../app/features/authSlice";
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 axios.defaults.withCredentials = true;
 
@@ -10,12 +11,12 @@ const Protected = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const auth = useSelector((state) => state.auth);
-
+  // const dispatch=useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     checkauth();
-  }, [auth]);
+  });
 
   // async function checkauth(){
   //   try{
@@ -27,7 +28,10 @@ const Protected = (props) => {
   //   }
   // }
   function checkauth() {
-    if (!auth.isAuthenticated) {
+    // dispatch(checkAuthentication());
+    // console.log('isAuthenticated: ',isAuthenticated);
+    const token=localStorage.getItem('jwt-token');
+    if (!token) {
       navigate("/login");
       return;
     }

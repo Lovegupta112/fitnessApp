@@ -25,7 +25,7 @@ const Favorites = () => {
   const [selectedActivities, setSelectedActivities] = useState({});
 
   const activity = useSelector((state) => state.activity);
-  console.log("activityslice: ", activity);
+  // console.log("activityslice: ", activity);
   const dispatch = useDispatch();
 
   const handleChange = (panel) => (event, isExpanded) => {
@@ -45,7 +45,7 @@ const Favorites = () => {
     // console.log(event.target.value);
     // console.log(event.target.checked);
     const activity = { [event.target.value]: event.target.checked };
-    console.log("activity:", activity);
+    // console.log("activity:", activity);
     setSelectedActivities({ ...selectedActivities, ...activity });
     dispatch(setSelectedActivity({ ...selectedActivities, ...activity }));
   }

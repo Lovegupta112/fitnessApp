@@ -56,10 +56,10 @@ const login = async (req, res) => {
       { id: existUser.rows[0].userid, email: existUser.rows[0].email },
       SECRET_KEY
     );
-    res.cookie("jwt", token, {
-      expires: new Date(Date.now() + 60 * 60),
-      httpOnly: true,
-    });
+    // res.cookie("jwt", token, {
+    //   expires: new Date(Date.now() + 60 * 60),
+    //   httpOnly: true,
+    // });
     res.status(200).json({ user: existUser.rows[0], token });
   } catch (error) {
     console.log("Error: ", error);
@@ -117,4 +117,17 @@ const logout = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, updateUserInfo, logout };
+const getUserInfo=async (req,res)=>{
+  try{
+  const userid=req.userid;
+  const userInfo = await query(`SELECT * FROM users WHERE userid=$1;`,[userid]);
+  console.log('userInfo: ',userInfo.rows[0]);
+  res.status(200).json(userInfo.rows[0]);
+  }
+  catch(error){
+    console.log('Error: ',error);
+    res.sendStatus(401);
+  }
+}
+
+module.exports = { signup, login, updateUserInfo, logout,getUserInfo };

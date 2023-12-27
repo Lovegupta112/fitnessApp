@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Stack, Typography, List, ListItem } from "@mui/material";
 import Favorites from "../components/Acivity/Favorites";
 import MeasurePerformance from "../components/Acivity/MeasurePerformance";
-import { useSelector } from "react-redux";
+import { useSelector ,useDispatch} from "react-redux";
 import Timer from "../components/Timer";
+import axios from "axios";
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const ActivityPage = () => {
   const [emptyFields, setEmptyFields] = useState([]);
@@ -12,11 +14,13 @@ const ActivityPage = () => {
   const { currentActivity, selectedActivity } = useSelector(
     (state) => state.activity
   );
-  console.log(currentActivity);
+
   useEffect(() => {
     showEmptyFieldInfo();
     checkActivityInfo();
   }, [userInfo, currentActivity]);
+
+ 
 
   const showEmptyFieldInfo = () => {
     let userInfoKeys = Object.keys(userInfo);
@@ -44,7 +48,7 @@ const ActivityPage = () => {
       sx={{
         minHeight: "calc(100vh - 10vh)",
       }}
-      padding={2}
+      padding={4}
       gap={2}
     >
       <Typography variant="h5" fontWeight="bold">
@@ -67,7 +71,7 @@ const ActivityPage = () => {
               <MeasurePerformance />
             </ListItem>
           </List>
-          {showTimer && <Timer />}
+          {/* {showTimer && <Timer />} */}
         </>
       )}
     </Stack>

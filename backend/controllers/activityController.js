@@ -32,4 +32,21 @@ const getUserActivity = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-module.exports = { addUserActivity, getUserActivity };
+
+const deleteUserActivity=async(req,res)=>{
+  try{
+     const activityid=req.params.activityid;
+     console.log('activityid: ',activityid);
+     if(!activityid){
+      return res.status(400).json({message:'activityId are required !'});
+     }
+     await query(`DELETE FROM activity WHERE activityid=${activityid}`);
+     
+     res.status(200).json({message:`Activity with id ${activityid} has deleted !`});
+  }
+  catch(error){
+    console.log('Error: ',error);
+    res.status(500).json({message:error.message});
+  }
+}
+module.exports = { addUserActivity, getUserActivity ,deleteUserActivity};

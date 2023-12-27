@@ -20,7 +20,9 @@ const ProfilePage = () => {
       }}
       padding={2}
     >
-      <Typography variant="h5">ProfilePage</Typography>
+      <Typography variant="h5" fontWeight="bold">
+        User Profile
+      </Typography>
       <Stack
         direction="row"
         sx={{
@@ -52,7 +54,11 @@ const ProfilePage = () => {
           >
             <AccountCircleIcon sx={{ fontSize: "6rem" }} />
           </IconButton>
-          {username && <Typography variant="h3" sx={{textTransform:'capitalize'}}>{username}</Typography>}
+          {username && (
+            <Typography variant="h3" sx={{ textTransform: "capitalize" }}>
+              {username}
+            </Typography>
+          )}
         </Stack>
         <Stack
           flexGrow={1}

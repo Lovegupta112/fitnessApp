@@ -28,6 +28,7 @@ const Signup = () => {
   const [userInfo, setUserInfo] = useState(defaultUser);
   const [isVisible, setIsVisible] = useState(false);
   const [err, setErr] = useState("");
+  const [apiError, setApiError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -51,6 +52,7 @@ const Signup = () => {
     event.preventDefault();
     // console.log(event.target);
     setErr("");
+    setApiError("");
     if (!userInfo.name.trim()) {
       setErr(" ");
       return;
@@ -59,8 +61,16 @@ const Signup = () => {
       setErr(" ");
       return;
     }
+    if(userInfo.email && !validateEmail(userInfo.email.trim())){
+      setErr('invalidEmail');
+      return;
+    }
     if (!userInfo.phone.trim()) {
       setErr(" ");
+      return;
+    }
+    if(userInfo.phone && !validatePhoneNumber(userInfo.phone.trim())){
+      setErr('invalidPhone');
       return;
     }
     if (!userInfo.password.trim()) {
@@ -78,11 +88,26 @@ const Signup = () => {
       dispatch(setAuthentication(res.data.token));
     } catch (error) {
       console.log("Error: ", error);
-      setErr(error?.response.data.Error);
+      setApiError(error?.response.data.Error);
       throw error;
     }
     navigate("/dashboard");
   };
+
+  function validateEmail(email) {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  }
+
+  function validatePhoneNumber(phone) {
+    let validPhoneformat =
+      /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+  
+    return phone.match(validPhoneformat);
+  }
 
   return (
     <Stack
@@ -127,8 +152,8 @@ const Signup = () => {
             placeholder="Enter Your email"
             value={userInfo.email}
             onChange={handleChange}
-            error={err && !userInfo.email ? true : false}
-            helperText={err && !userInfo.email ? "Please Fill the email !" : ""}
+            error={((err && !userInfo.email) || (err && err==='invalidEmail')) ? true : false}
+            helperText={((err && !userInfo.email)|| (err && err==='invalidEmail')) ? "Please Fill the Correct email !" : ""}
           />
         </Stack>
         <Stack gap={1}>
@@ -140,8 +165,8 @@ const Signup = () => {
             placeholder="Enter Your phone"
             value={userInfo.phone}
             onChange={handleChange}
-            error={err && !userInfo.phone ? true : false}
-            helperText={err && !userInfo.phone ? "Please Fill the phone !" : ""}
+            error={((err && !userInfo.phone) || (err && err==='invalidPhone')) ? true : false}
+            helperText={((err && !userInfo.phone) || (err && err==='invalidPhone')) ? "Please Fill the Correct phone !" : ""}
           />
         </Stack>
         <Stack gap={1}>
@@ -169,8 +194,10 @@ const Signup = () => {
             }}
           />
         </Stack>
-        <Typography color="red">{err}</Typography>
-        <Button variant="contained" type="submit">
+        <Typography color="red">{apiError}</Typography>
+        <Button variant="contained" type="submit" sx={{backgroundColor:'black','&:hover':{
+          backgroundColor:'black'
+        }}}>
           Signup
         </Button>
       </form>

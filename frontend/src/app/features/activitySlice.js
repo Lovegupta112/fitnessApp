@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   selectedActivity: {},
   currentActivity: { activityName: "", distance: "", time: "", unit: "" },
-  userActivities:[],
-  dashboardActivities:[],
+  userActivities: [],
+  dashboardActivities: {},
 };
 
 const activitySlice = createSlice({
@@ -12,12 +12,9 @@ const activitySlice = createSlice({
   initialState,
   reducers: {
     setSelectedActivity: (state, action) => {
-      console.log("payload:", action.payload);
       state.selectedActivity = action.payload;
-      console.log(state.selectedActivity);
     },
     setCurrentActivity: (state, action) => {
-      console.log("payload:", action.payload);
       const data = action.payload;
       if (Object.keys(data).length > 0) {
         state.currentActivity[data.name] = data.value;
@@ -31,16 +28,36 @@ const activitySlice = createSlice({
         //   state=initialState.currentActivity;
       }
     },
-    setUserActivities:(state,action)=>{
-      console.log("payload: ",action.payload);
-      state.userActivities.push(action.payload);
+    setUserActivities: (state, action) => {
+      state.userActivities = action.payload;
     },
-    setDashboardActivities:(state,action)=>{
-      state.dashboardActivities.push(action.payload);
-    }
+    setDashboardActivities: (state, action) => {
+      const { activityid, activity } = action.payload;
+      state.dashboardActivities[activityid] = activity;
+    },
+    removeDashboardActivity: (state, action) => {
+      const { activityid } = action.payload;
+      delete state.dashboardActivities[activityid];
+    },
+    removeUserActivity: (state, action) => {
+      const { activityid } = action.payload;
+      state.userActivities = state.userActivities.filter(
+        (activity) => Number(activity.activityid) !== activityid
+      );
+    },
+    removeCurrentActivity:(state,action)=>{
+       state.currentActivity={ activityName: "", distance: "", time: "", unit: "" };
+    },
   },
 });
 
-export const { setSelectedActivity, setCurrentActivity ,setUserActivities,setDashboardActivities} =
-  activitySlice.actions;
+export const {
+  setSelectedActivity,
+  setCurrentActivity,
+  setUserActivities,
+  setDashboardActivities,
+  removeDashboardActivity,
+  removeUserActivity,
+  removeCurrentActivity
+} = activitySlice.actions;
 export default activitySlice.reducer;

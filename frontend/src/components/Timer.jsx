@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Button, Stack, Typography } from "@mui/material";
 import axios from 'axios';
 import { useSelector ,useDispatch } from "react-redux";
-import { setCurrentActivity } from "../app/features/activitySlice";
+import { setCurrentActivity ,removeCurrentActivity } from "../app/features/activitySlice";
 axios.defaults.baseURL=import.meta.env.VITE_BASE_URL;
 
 const defaultTimer = { hours: 0, min: 0, sec: 0 };
@@ -13,7 +13,6 @@ const Timer = () => {
   const {currentActivity}=useSelector((state)=>state.activity);
   const dispatch=useDispatch();
 
-  console.log(timer,currentActivity);
   const run = () => {
     setTimer((prevTimer) => {
       let h = prevTimer.hours,
@@ -52,9 +51,11 @@ const Timer = () => {
     setIsPaused(false);
   };
   const saveRecord=async()=>{
-    console.log('timer: ',timer);
+    // console.log('timer: ',timer);
+
+  // console.log(timer,currentActivity);
     const totalTime=calculateTime();
-    console.log('totalTime(sec): ',totalTime);
+    // console.log('totalTime(sec): ',totalTime);
    try{
       
        const token=localStorage.getItem('jwt-token');
@@ -65,6 +66,7 @@ const Timer = () => {
         }
        });
        console.log(res.data);
+     dispatch(removeCurrentActivity());
    }
    catch(error){
     console.log('Error:',error);
@@ -78,10 +80,7 @@ const Timer = () => {
   return (
     <Stack
       gap={2}
-      sx={{
-        boxShadow: "1px 1px 5px grey",
-      }}
-      padding={3}
+      padding={2}
     >
       <Button
         sx={{ width: "fit-content", backgroundColor: "#B53471" }}
