@@ -6,4 +6,5 @@ const activityController=require('../controllers/activityController');
 router.post('/save',activityController.addUserActivity);
 router.get('/getActivities',activityController.getUserActivity);
 router.delete('/deleteActivity/:activityid',activityController.deleteUserActivity);
+router.patch('/updateDashboardStatus',activityController.setDashboardActivityStatus);
 module.exports=router;

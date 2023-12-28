@@ -1,17 +1,22 @@
 import { useRef, useState } from "react";
 import { Button, Stack, Typography } from "@mui/material";
-import axios from 'axios';
-import { useSelector ,useDispatch } from "react-redux";
-import { setCurrentActivity ,removeCurrentActivity } from "../app/features/activitySlice";
-axios.defaults.baseURL=import.meta.env.VITE_BASE_URL;
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setCurrentActivity,
+  removeCurrentActivity,
+  addActivity,
+} from "../app/features/activitySlice";
+import {toast} from 'react-toastify';
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const defaultTimer = { hours: 0, min: 0, sec: 0 };
 const Timer = () => {
   const [timer, setTimer] = useState(defaultTimer);
   const timerRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
-  const {currentActivity}=useSelector((state)=>state.activity);
-  const dispatch=useDispatch();
+  const { currentActivity } = useSelector((state) => state.activity);
+  const dispatch = useDispatch();
 
   const run = () => {
     setTimer((prevTimer) => {
@@ -50,38 +55,22 @@ const Timer = () => {
     setTimer(defaultTimer);
     setIsPaused(false);
   };
-  const saveRecord=async()=>{
+  const saveRecord = async () => {
     // console.log('timer: ',timer);
+    // console.log(timer,currentActivity);
+    const totalTime = calculateTime();
+    dispatch(setCurrentActivity({ name: "time", value: totalTime }));
+    toast.success('Activity Saved !');
+    dispatch(
+      addActivity({ currentActivity: { ...currentActivity }, time: totalTime })
+    );
+  };
 
-  // console.log(timer,currentActivity);
-    const totalTime=calculateTime();
-    // console.log('totalTime(sec): ',totalTime);
-   try{
-      
-       const token=localStorage.getItem('jwt-token');
-       dispatch(setCurrentActivity({name:'time',value:totalTime}))
-       const res=await axios.post('/activity/save',{...currentActivity,time:totalTime},{
-        headers:{
-          'Authorization':`Bearer ${token}`
-        }
-       });
-       console.log(res.data);
-     dispatch(removeCurrentActivity());
-   }
-   catch(error){
-    console.log('Error:',error);
-    throw error;
-   }
-  }
-
-  const calculateTime=()=>{
-    return timer.hours*3600+timer.min*60+timer.sec;
-  }
+  const calculateTime = () => {
+    return timer.hours * 3600 + timer.min * 60 + timer.sec;
+  };
   return (
-    <Stack
-      gap={2}
-      padding={2}
-    >
+    <Stack gap={2} padding={2}>
       <Button
         sx={{ width: "fit-content", backgroundColor: "#B53471" }}
         variant="contained"

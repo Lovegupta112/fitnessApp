@@ -9,7 +9,8 @@ import DashboardPage from './pages/DashboardPage';
 import ProfilePage from './pages/ProfilePage';
 import ActivityPage from './pages/ActivityPage';
 import PerformancePage from './pages/PerformancePage';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App=()=>{
 
@@ -25,6 +26,7 @@ return (
     <Route path="signup" element={<Signup/>}/> 
     <Route path="login" element={<Login />} />
    </Routes>
+   <ToastContainer/>
   </>
 )
 }

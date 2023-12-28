@@ -3,15 +3,19 @@ require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = process.env.SECRET_KEY;
+const {
+  getUserInfoUsingEmailQuery,
+  signupQuery,
+  updateUserInfoQuery,
+  getUserInfoUsingUseridQuery,
+} = require("../util/queries");
 
 const signup = async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const existUser = await query(`SELECT * FROM users WHERE users.email=$1`, [
-      email,
-    ]);
+    const existUser = await query(getUserInfoUsingEmailQuery, [email]);
 
     if (existUser.rows.length > 0) {
       return res
@@ -19,10 +23,12 @@ const signup = async (req, res) => {
         .json({ Error: `User Already Exist with email ${email}!` });
     }
 
-    const newUser = await query(
-      `INSERT INTO users (username,email,phone,password) VALUES($1,$2,$3,$4) RETURNING *;`,
-      [name, email, phone, hashedPassword]
-    );
+    const newUser = await query(signupQuery, [
+      name,
+      email,
+      phone,
+      hashedPassword,
+    ]);
     console.log("SuccessFully signup : ", newUser.rows[0]);
     const token = jwt.sign({ id: newUser.rows[0].userid, email }, SECRET_KEY);
     res.cookie("jwt", token, {
@@ -39,9 +45,7 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const existUser = await query(`SELECT * FROM users WHERE users.email=$1`, [
-      email,
-    ]);
+    const existUser = await query(getUserInfoUsingEmailQuery, [email]);
     if (existUser.rows.length <= 0) {
       return res.status(404).json({ message: "User not found !" });
     }
@@ -80,11 +84,7 @@ const updateUserInfo = async (req, res) => {
       weight,
       userid,
     } = req.body;
-    const updateQuery = ` UPDATE users
-      SET username=$1 , email=$2 , phone=$3,gender=$4,bloodgroup=$5,adharcard=$6,age=$7,weight=$8
-      WHERE userid=$9 RETURNING *
-     `;
-    const updateUser = await query(updateQuery, [
+    const updateUser = await query(updateUserInfoQuery, [
       username,
       email,
       phone,
@@ -96,12 +96,10 @@ const updateUserInfo = async (req, res) => {
       userid,
     ]);
     console.log(updateUser.rows[0]);
-    res
-      .status(200)
-      .json({
-        message: `update user with email ${email}`,
-        user: updateUser.rows[0],
-      });
+    res.status(200).json({
+      message: `update user with email ${email}`,
+      user: updateUser.rows[0],
+    });
   } catch (error) {
     console.log("Error: ", error);
     res.status(500).json({ message: error.message });
@@ -117,17 +115,16 @@ const logout = async (req, res) => {
   }
 };
 
-const getUserInfo=async (req,res)=>{
-  try{
-  const userid=req.userid;
-  const userInfo = await query(`SELECT * FROM users WHERE userid=$1;`,[userid]);
-  console.log('userInfo: ',userInfo.rows[0]);
-  res.status(200).json(userInfo.rows[0]);
-  }
-  catch(error){
-    console.log('Error: ',error);
+const getUserInfo = async (req, res) => {
+  try {
+    const userid = req.userid;
+    const userInfo = await query(getUserInfoUsingUseridQuery, [userid]);
+    console.log("userInfo: ", userInfo.rows[0]);
+    res.status(200).json(userInfo.rows[0]);
+  } catch (error) {
+    console.log("Error: ", error);
     res.sendStatus(401);
   }
-}
+};
 
-module.exports = { signup, login, updateUserInfo, logout,getUserInfo };
+module.exports = { signup, login, updateUserInfo, logout, getUserInfo };

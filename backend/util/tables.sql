@@ -22,5 +22,6 @@ CREATE TABLE IF NOT EXISTS activity(
    distance VARCHAR(255) NOT NULL,
    time VARCHAR(255) NOT NULL,
    unit VARCHAR(100) NOT NULL,
+   dashboardstatus BOOLEAN DEFAULT false,
    userid INT REFERENCES users(userId)
 );

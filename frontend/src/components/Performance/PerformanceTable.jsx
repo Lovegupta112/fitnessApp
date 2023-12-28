@@ -17,11 +17,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  setUserActivities,
-  setDashboardActivities,
-  removeDashboardActivity,
-  removeUserActivity,
+  fetchActivities,
+  deleteActivity,
+  updateDashboardActivityStatus
 } from "../../app/features/activitySlice";
+import {toast} from 'react-toastify';
+
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const headCells = [
@@ -102,9 +103,9 @@ const PerformanceTable = () => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("activityname");
   const [activities, setActivities] = useState([]);
-  const [addedActivities, setAddedActivities] = useState([]);
+  // const [addedActivities, setAddedActivities] = useState([]);
   const dispatch = useDispatch();
-  const { userActivities, dashboardActivities } = useSelector(
+  const { userActivities } = useSelector(
     (state) => state.activity
   );
   const { selectedActivity } = useSelector((state) => state.filter);
@@ -120,12 +121,13 @@ const PerformanceTable = () => {
     getAllActivity();
   }, []);
 
-  useEffect(() => {
-    checkAllDashboardActivities();
-  }, [dashboardActivities]);
+  useEffect(()=>{
+    setActivities(userActivities);
+  },[userActivities]);
+
 
   const updatedRows = activities
-    .filter((activity) => activity.activityname.includes(selectedActivity))
+    ?.filter((activity) => activity.activityname?.includes(selectedActivity))
     ?.sort((a, b) => {
       console.log(orderBy, a[orderBy], b[orderBy]);
       if (orderBy === "performance") {
@@ -153,64 +155,27 @@ const PerformanceTable = () => {
       }
     });
 
-  // useEffect(() => {
-  //   getAllActivity();
-  //   checkAllDashboardActivities();
-  // }, [userActivities]);
-
   const getAllActivity = async () => {
-    try {
-      const token = localStorage.getItem("jwt-token");
-      const res = await axios.get("/activity/getActivities", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log("userActivity: ", [...res.data]);
-      setActivities([...res?.data]);
-      dispatch(setUserActivities([...res?.data]));
-    } catch (error) {
-      console.log("Error: ", error);
-    }
+    dispatch(fetchActivities());
   };
 
-  const checkAllDashboardActivities = () => {
-    console.log(Object.keys(dashboardActivities));
-    setAddedActivities(Object.keys(dashboardActivities));
-  };
-  const addToDashboard = (row) => {
-    // console.log(row);
-    dispatch(
-      setDashboardActivities({ activityid: row.activityid, activity: row })
-    );
-    // setAddedActivities([...addedActivities, row.activityid]);
+
+  const addToDashboard = (activityid) => {
+    dispatch(updateDashboardActivityStatus({activityid,status:true}));
+    toast.success("Activity Added !");
   };
   const removeFromDashboard = (activityid) => {
-    dispatch(removeDashboardActivity({ activityid }));
+    dispatch(updateDashboardActivityStatus({activityid,status:false}));
+   toast.info("Activity Removed !");
   };
   const deleteUserActivity = async (activityid) => {
-    try {
-      const token = localStorage.getItem("jwt-token");
-      const deletedActivity = await axios.delete(
-        `/activity/deleteActivity/${activityid}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      console.log("deleteActivity: ", deletedActivity);
-      dispatch(removeUserActivity({ activityid }));
-      dispatch(removeDashboardActivity({ activityid }));
-      setActivities(
-        activities.filter(
-          (activity) => Number(activity.activityid) !== activityid
-        )
-      );
-    } catch (error) {
-      console.log("Error: ", error);
-    }
+     dispatch(deleteActivity(activityid));
+     toast.success("Activity Completely Deleted !");
+     setActivities(
+      activities.filter(
+        (activity) => Number(activity.activityid) !== activityid
+      )
+    );
   };
 
   function getUserPerformance(unit, distance, time) {
@@ -219,10 +184,11 @@ const PerformanceTable = () => {
     if (unit === "kms") {
       time = time / 3600;
     }
-
     speedPerformance = distance / time;
     return speedPerformance;
   }
+
+ console.log(activities);
 
   return (
     <>
@@ -256,7 +222,7 @@ const PerformanceTable = () => {
                           : "NA"}
                       </TableCell>
                       <TableCell>
-                        {addedActivities.includes(`${row.activityid}`) ? (
+                        {row.dashboardstatus ? (
                           <Button
                             variant="contained"
                             sx={{
@@ -270,7 +236,7 @@ const PerformanceTable = () => {
                           <Button
                             variant="contained"
                             sx={{ backgroundColor: "green" }}
-                            onClick={() => addToDashboard(row)}
+                            onClick={() => addToDashboard(row.activityid)}
                           >
                             Add To Dashboard
                           </Button>

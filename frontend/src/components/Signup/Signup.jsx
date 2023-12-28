@@ -15,6 +15,7 @@ import "./style.css";
 import { useDispatch } from "react-redux";
 import { signup } from "../../app/features/userSlice";
 import { setAuthentication } from "../../app/features/authSlice";
+import {toast} from 'react-toastify';
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 axios.defaults.withCredentials = true;
@@ -84,6 +85,7 @@ const Signup = () => {
       // const res = await axios.post("/users/signup", userInfo,{withCredentials:true});
       const res = await axios.post("/users/signup", userInfo);
       console.log(res.data);
+      toast.success("Signup SuccessFully !");
       dispatch(signup(res.data));
       dispatch(setAuthentication(res.data.token));
     } catch (error) {

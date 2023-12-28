@@ -12,6 +12,7 @@ export default function CustomDropdown({ name, menuItems, id }) {
     (state) => state.activity.currentActivity
   );
   const dispatch = useDispatch();
+  console.log(currentActivity);
 
   useEffect(() => {
     if (id === "activityName") {

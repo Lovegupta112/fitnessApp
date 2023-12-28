@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserInfo } from "../../app/features/userSlice";
+import {toast} from 'react-toastify';
 // import './style.css';
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
@@ -96,6 +97,7 @@ const ProfileForm = () => {
       const res = await axios.put("/users/updateInfo", userInfo);
       console.log(res?.data);
       dispatch(updateUserInfo(res?.data?.user));
+      toast.success("Profile Updated !");
     } catch (error) {
       console.log("Error: ", error);
       setErr(error?.response?.data?.Error);

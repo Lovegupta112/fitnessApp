@@ -39,7 +39,7 @@ const Favorites = () => {
     setSelectedActivities(activity.selectedActivity);
   }, [activity.selectedActivity]);
 
-  // console.log(selectedActivities);
+  console.log(selectedActivities);
 
   function setActivity(event) {
     // console.log(event.target.value);

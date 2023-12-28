@@ -13,6 +13,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useDispatch } from "react-redux";
 import { login } from "../app/features/userSlice";
 import { setAuthentication } from "../app/features/authSlice";
+import {toast} from 'react-toastify';
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 axios.defaults.withCredentials = true;
@@ -46,6 +47,7 @@ const Login = () => {
         withCredentials: true,
       });
       console.log(res.data);
+      toast.success("Login SuccessFully !");
       dispatch(login(res.data));
       dispatch(setAuthentication(res.data.token));
     } catch (error) {

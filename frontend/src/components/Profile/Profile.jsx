@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { logout } from "../../app/features/userSlice";
 import { removeAuthentication } from "../../app/features/authSlice";
-
+import {toast} from 'react-toastify';
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 export default function Profile() {
@@ -61,6 +61,7 @@ export default function Profile() {
   const logoutUser = () => {
     console.log("logout user ...");
     dispatch(logout());
+    toast.success("Logout SuccessFully !");
     dispatch(removeAuthentication());
     setAnchorEl(null);
     navigate("/login");
