@@ -22,8 +22,11 @@ const FilterByActivity = () => {
   }, [userActivities]);
 
   const getActivities = () => {
+    const userSelectedActivities=new Set(userActivities.map((activity) => activity.activityname));
+    console.log(userSelectedActivities);
     setSelectedActivities(
-      userActivities.map((activity) => activity.activityname)
+     Array.from(userSelectedActivities)
+    // userActivities.map((activity) => activity.activityname)
     );
   };
 

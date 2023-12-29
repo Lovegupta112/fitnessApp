@@ -39,9 +39,6 @@ dispatch(fetchActivities());
   // console.log('dashboard activities: ',activities);
   return (
     <Stack
-      sx={{
-        minHeight: "calc(100vh - 10vh)",
-      }}
       padding={2}
       gap={2}
     >
@@ -55,7 +52,13 @@ dispatch(fetchActivities());
           >
             User Activities :
           </Typography>
-          <Stack direction="row" gap={5} padding={2}>
+          <Stack direction="row" gap={2} padding={2} sx={{
+            width:'100%',
+            // border:'1px solid red',
+            flexWrap:'wrap',
+            justifyContent:'space-around',
+            rowGap:'4rem'
+          }}>
             {activities.filter((activity) =>activity.dashboardstatus===true).map((activity)=>( <Activity key={activity.activityid} activity={activity} />))}
           </Stack>
         </>

@@ -37,6 +37,7 @@ const Activity = ({activity}) => {
           filter: "brightness(90%)",
           transform:"translateY(-5px)",
           boxShadow:'1px 1px 15px grey',
+          cursor:'pointer',
         },
         "&:hover button": {
           visibility: "visible",
