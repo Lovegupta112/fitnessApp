@@ -8,7 +8,7 @@ const {
 
 const addUserActivity = async (req, res) => {
   try {
-    const { activityName, distance, time, unit } = req.body;
+    const { activityName, distance, time, unit,createdAt } = req.body;
     console.log("activity Request: ", req.userid);
     // console.log('body',data);
     const newActivity = await query(addActivityQuery, [
@@ -17,6 +17,7 @@ const addUserActivity = async (req, res) => {
       time,
       unit,
       req.userid,
+      createdAt
     ]);
 
     console.log("SuccessFully Created: ", newActivity.rows[0]);

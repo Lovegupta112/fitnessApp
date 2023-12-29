@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import { signup } from "../../app/features/userSlice";
 import { setAuthentication } from "../../app/features/authSlice";
 import {toast} from 'react-toastify';
+import {validateEmail,validatePhoneNumber} from '../../util/validation';
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 axios.defaults.withCredentials = true;
@@ -80,7 +81,7 @@ const Signup = () => {
     }
 
     console.log(userInfo);
-    setUserInfo(defaultUser);
+    // setUserInfo(defaultUser);
     try {
       // const res = await axios.post("/users/signup", userInfo,{withCredentials:true});
       const res = await axios.post("/users/signup", userInfo);
@@ -90,26 +91,23 @@ const Signup = () => {
       dispatch(setAuthentication(res.data.token));
     } catch (error) {
       console.log("Error: ", error);
-      setApiError(error?.response.data.Error);
+      // setApiError(error?.response.data.Error);
+      if(error?.response?.data?.data){
+        setApiError(error?.response?.data?.data[0])
+      }
+      else if(error?.response?.data?.message){
+        setApiError(error?.response?.data.message);
+      }
+      else{
+        setApiError(error?.response?.data?.Error);
+      }
       throw error;
     }
     navigate("/dashboard");
   };
 
-  function validateEmail(email) {
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  }
 
-  function validatePhoneNumber(phone) {
-    let validPhoneformat =
-      /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
-  
-    return phone.match(validPhoneformat);
-  }
+
 
   return (
     <Stack

@@ -9,17 +9,19 @@ const initialState = {
 };
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
-const token = localStorage.getItem("jwt-token");
+
 
 export const fetchActivities = createAsyncThunk(
   "activity/fetchActivities",
   async () => {
     try {
+      const token = localStorage.getItem("jwt-token");
       const res = await axios.get("/activity/getActivities", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      // console.log();
       return res.data;
     } catch (error) {
       throw error.message;
@@ -31,9 +33,10 @@ export const addActivity = createAsyncThunk(
   async ({ currentActivity, time }) => {
     try {
       // console.log("current: ", currentActivity, time);
+      const token = localStorage.getItem("jwt-token");
       const res = await axios.post(
         "/activity/save",
-        { ...currentActivity, time },
+        { ...currentActivity, time ,createdAt:Date.now()},
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -51,6 +54,7 @@ export const deleteActivity = createAsyncThunk(
   "activity/deleteActivity",
   async (activityid) => {
     try {
+      const token = localStorage.getItem("jwt-token");
       const deletedActivity = await axios.delete(
         `/activity/deleteActivity/${activityid}`,
         {
@@ -71,6 +75,7 @@ export const updateDashboardActivityStatus = createAsyncThunk(
   "activity/updateDashboardActivityStatus",
   async ({ activityid, status }) => {
     try {
+      const token = localStorage.getItem("jwt-token");
       const res = await axios.patch(
         "activity/updateDashboardStatus",
         { activityid, dashboardStatus: status },
@@ -119,7 +124,18 @@ const activitySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchActivities.fulfilled, (state, action) => {
-      state.userActivities = action.payload;
+      console.log(action.payload);
+      
+      state.userActivities = action.payload?.sort((a, b)=>{
+        const aValue=Number(a.createdAt);
+        const bValue=Number(b.createdAt);
+        if(aValue>bValue){
+         return 1;
+        }
+        else {
+         return -1;
+        }
+     });
       state.error = null;
     }),
       builder.addCase(fetchActivities.rejected, (state, action) => {

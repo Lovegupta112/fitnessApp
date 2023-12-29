@@ -9,7 +9,7 @@ const initialState = {
   bloodgroup: "",
   adharcard: "",
   age: 0,
-  weight: "",
+  weight: 0,
 };
 const userSlice = createSlice({
   name: "user",

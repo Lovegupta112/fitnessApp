@@ -15,11 +15,12 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserInfo } from "../../app/features/userSlice";
 import {toast} from 'react-toastify';
+import { validateEmail,validatePhoneNumber ,validateBloodgroup } from "../../util/validation";
 // import './style.css';
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 const defaultUser = {
-  userid: "",
+  userid: 0,
   username: "",
   email: "",
   phone: "",
@@ -27,11 +28,12 @@ const defaultUser = {
   bloodgroup: "",
   adharcard: "",
   age: 0,
-  weight: "",
+  weight: 0,
 };
 const ProfileForm = () => {
   const [userInfo, setUserInfo] = useState(defaultUser);
   const [err, setErr] = useState("");
+  const [apiError, setApiError] = useState("");
   const navigate = useNavigate();
 
   const user = useSelector((state) => state.user);
@@ -76,14 +78,16 @@ const ProfileForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setErr("");
+    setApiError("");
+    // console.log('api calling');
     if (
       !userInfo.username.trim() ||
       !userInfo.email.trim() ||
       !userInfo.phone.trim() ||
-      !userInfo.gender ||
+      // !userInfo.gender ||
       !userInfo.age ||
-      !userInfo.weight?.trim() ||
-      !userInfo.bloodgroup?.trim() ||
+      !userInfo.weight ||
+      !userInfo.bloodgroup ||
       !userInfo.adharcard ||
       userInfo.adharcard.length != 12 ||
       isNaN(userInfo.adharcard)
@@ -91,20 +95,58 @@ const ProfileForm = () => {
       setErr("error");
       return;
     }
-    setErr("");
+    if(userInfo.email && !validateEmail(userInfo.email.trim())){
+      setErr('invalidEmail');
+      return;
+    }
+    if(userInfo.phone && !validatePhoneNumber(userInfo.phone.trim())){
+      setErr('invalidPhone');
+      return;
+    }
+    if(userInfo.bloodgroup && !validateBloodgroup(userInfo.bloodgroup)){
+      setErr('bloodgroup');
+      return;
+    }
+    // setErr("");
     // console.log({userInfo});
     try {
+      console.log('api calling');
       const res = await axios.put("/users/updateInfo", userInfo);
       console.log(res?.data);
       dispatch(updateUserInfo(res?.data?.user));
       toast.success("Profile Updated !");
     } catch (error) {
       console.log("Error: ", error);
-      setErr(error?.response?.data?.Error);
+      // setErr(error?.response?.data?.Error);
+      // setApiError(error?.response?.data?.Error);
+      if(error?.response?.data?.data){
+        setApiError(error?.response?.data?.data[0])
+      }
+      else if(error?.response?.data?.message){
+         const errMsg=error?.response?.data?.message.split(" ");
+         const errorType=errMsg[errMsg.length-1];
+         console.log(errorType);
+         let customError='';
+         if(errorType==='"users_adharcard_key"'){
+          customError=`${userInfo.adharcard} Adharcard no Already Exist !`;
+         }
+         else if(errorType==='"users_email_key"'){
+          customError=`${userInfo.email} email id Already Exist !`
+         }
+         else {
+          customError=error?.response?.data?.message;
+         }
+         console.log(customError);
+        setApiError(customError);
+      }
+      else{
+        setApiError(error?.response?.data?.Error);
+      }
       throw error;
     }
     // navigate("/activity");
   };
+  console.log(apiError);
 
   return (
     <Stack
@@ -146,9 +188,9 @@ const ProfileForm = () => {
               placeholder="Enter Your email"
               value={userInfo.email}
               onChange={handleChange}
-              error={err && !userInfo.email ? true : false}
+              error={((err && !userInfo.email) || (err && err==='invalidEmail')) ? true : false}
               helperText={
-                err && !userInfo.email ? "Please Fill the email !" : ""
+                ((err && !userInfo.email) || (err && err==='invalidEmail')) ? "Please Fill the Valid email !" : ""
               }
             />
           </Stack>
@@ -161,9 +203,9 @@ const ProfileForm = () => {
               placeholder="Enter Your phone"
               value={userInfo.phone}
               onChange={handleChange}
-              error={err && !userInfo.phone ? true : false}
+              error={ ((err && !userInfo.phone) || (err && err==='invalidPhone'))? true : false}
               helperText={
-                err && !userInfo.phone ? "Please Fill the phone !" : ""
+                ((err && !userInfo.phone) || (err && err==='invalidPhone')) ? "Please Fill the Correct phone No!" : ""
               }
             />
           </Stack>
@@ -177,11 +219,13 @@ const ProfileForm = () => {
               name="gender"
               value={userInfo.gender}
               onChange={handleChange}
+
             >
               <FormControlLabel
                 value="female"
                 control={<Radio />}
                 label="Female"
+               
               />
               <FormControlLabel value="male" control={<Radio />} label="Male" />
               <FormControlLabel
@@ -200,10 +244,10 @@ const ProfileForm = () => {
               placeholder="Enter your Blood Group"
               value={userInfo.bloodgroup}
               onChange={handleChange}
-              error={err && !userInfo.bloodgroup ? true : false}
+              error={((err && !userInfo.bloodgroup) || (err && err==='bloodgroup'))  ? true : false}
               helperText={
-                err && !userInfo.bloodgroup
-                  ? "Please Fill your Blood group !"
+                (err && !userInfo.bloodgroup) || (err && err==='bloodgroup')
+                  ? "Please Fill Correct Blood group !"
                   : ""
               }
             />
@@ -248,7 +292,7 @@ const ProfileForm = () => {
           <Stack gap={1}>
             <label htmlFor="weight">Weight</label>
             <TextField
-              type="text"
+              type="number"
               id="weight"
               name="weight"
               placeholder="Enter Your Weight"
@@ -261,7 +305,7 @@ const ProfileForm = () => {
             />
           </Stack>
         </Stack>
-        {/* <Typography color="red">{err}</Typography> */}
+        <Typography color="red">{apiError}</Typography>
 
         <Button
           variant="contained"

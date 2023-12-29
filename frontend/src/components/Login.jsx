@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { useDispatch } from "react-redux";
+import { useDispatch ,useSelector } from "react-redux";
 import { login } from "../app/features/userSlice";
 import { setAuthentication } from "../app/features/authSlice";
 import {toast} from 'react-toastify';
@@ -26,6 +26,8 @@ const Login = () => {
   const [loginInfo, setLoginInfo] = useState(defaultValue);
   const [isVisible, setIsVisible] = useState(false);
   const [err, setErr] = useState("");
+  const user=useSelector((state)=>state.user);
+  // console.log(user);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -52,7 +54,12 @@ const Login = () => {
       dispatch(setAuthentication(res.data.token));
     } catch (error) {
       console.log("Error: ", error);
-      setErr(error?.response?.data.message);
+      if(error?.response?.data?.data){
+        setErr(error?.response?.data?.data[0])
+      }
+      else{
+        setErr(error?.response?.data.message);
+      }
       throw error;
     }
 

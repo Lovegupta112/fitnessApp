@@ -4,7 +4,8 @@ import { IconButton, Stack, Typography } from "@mui/material";
 import Profile from "./Profile/Profile";
 import { useSelector, useDispatch } from "react-redux";
 import { checkAuthentication } from "../app/features/authSlice";
-import { updateUserInfo } from "../app/features/userSlice";
+import { logout, updateUserInfo } from "../app/features/userSlice";
+import { fetchActivities } from "../app/features/activitySlice";
 import axios from "axios";
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
@@ -23,42 +24,43 @@ const Header = () => {
     //   setIsAuthenticated(false);
     // }
     dispatch(checkAuthentication());
-    console.log('auth: ',auth);
+    console.log("auth: ", auth);
     if (!auth.isAuthenticated) {
+      dispatch(logout());
       setIsAuthenticated(false);
+      return;
     } else {
       setIsAuthenticated(true);
+
+      dispatch(fetchActivities());
+      getUserInfo();
     }
-    getUserInfo();
   }, [auth]);
 
-  const getUserInfo=async()=>{
-    try{
-      const token=localStorage.getItem('jwt-token');
+  const getUserInfo = async () => {
+    try {
+      const token = localStorage.getItem("jwt-token");
       const res = await axios.get("/users/userInfo", {
         withCredentials: true,
-        headers:{
-          'Authorization':`Bearer ${token}`
-        }
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       console.log(res.data);
       dispatch(updateUserInfo(res.data));
-    }
-    catch(error){
+    } catch (error) {
       console.log("Error: ", error);
     }
-  }
-
-
+  };
 
   return (
     <Stack
       direction="row"
       sx={{
         height: "10vh",
-        backgroundColor:'black',
-        boxShadow:'2px 2px 10px grey',
-        color:'white'
+        backgroundColor: "black",
+        boxShadow: "2px 2px 10px grey",
+        color: "white",
       }}
       alignItems="center"
       justifyContent="space-between"
@@ -81,12 +83,6 @@ const Header = () => {
         <Link to={"/"}>
           <Typography>Home</Typography>
         </Link>
-        <Link to={"/dashboard"}>
-          <Typography>Dashboard</Typography>
-        </Link>
-        <Link to={"/activity"}>
-          <Typography>Activity</Typography>
-        </Link>
 
         {!isAuthenticated ? (
           <>
@@ -99,6 +95,12 @@ const Header = () => {
           </>
         ) : (
           <>
+            <Link to={"/dashboard"}>
+              <Typography>Dashboard</Typography>
+            </Link>
+            <Link to={"/activity"}>
+              <Typography>Activity</Typography>
+            </Link>
             <Link to={"/performance"}>
               <Typography>Performance</Typography>
             </Link>

@@ -8,6 +8,7 @@ const {
   signupQuery,
   updateUserInfoQuery,
   getUserInfoUsingUseridQuery,
+  getUserInfoUsingAdharcardQuery
 } = require("../util/queries");
 
 const signup = async (req, res) => {
@@ -84,6 +85,14 @@ const updateUserInfo = async (req, res) => {
       weight,
       userid,
     } = req.body;
+
+    // const existUser=await query(getUserInfoUsingAdharcardQuery,[adharcard]);
+
+    // if(existUser.rows.length>0 && existUser.rows[0].userid!==userid){
+    //   return res
+    //   .status(400)
+    //   .json({ Error: `User Already Exist with this adharcard no ${adharcard}!` });
+    // }
     const updateUser = await query(updateUserInfoQuery, [
       username,
       email,

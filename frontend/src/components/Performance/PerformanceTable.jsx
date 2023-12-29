@@ -19,9 +19,9 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   fetchActivities,
   deleteActivity,
-  updateDashboardActivityStatus
+  updateDashboardActivityStatus,
 } from "../../app/features/activitySlice";
-import {toast} from 'react-toastify';
+import { toast } from "react-toastify";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
@@ -101,15 +101,14 @@ const PerformanceTableHead = (props) => {
 };
 const PerformanceTable = () => {
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("activityname");
+  const [orderBy, setOrderBy] = useState("");
   const [activities, setActivities] = useState([]);
   // const [addedActivities, setAddedActivities] = useState([]);
   const dispatch = useDispatch();
-  const { userActivities } = useSelector(
-    (state) => state.activity
-  );
+  const { userActivities } = useSelector((state) => state.activity);
   const { selectedActivity } = useSelector((state) => state.filter);
 
+  // console.log(userActivities);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -121,57 +120,63 @@ const PerformanceTable = () => {
     getAllActivity();
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     setActivities(userActivities);
-  },[userActivities]);
+  }, [userActivities]);
 
+  // const selected = activities?.filter((activity) =>
+  //   activity.activityname?.includes(selectedActivity)
+  // );
+  // console.log("selected: ",selected);
 
-  const updatedRows = activities
+  let updatedRows = activities
     ?.filter((activity) => activity.activityname?.includes(selectedActivity))
-    ?.sort((a, b) => {
-      console.log(orderBy, a[orderBy], b[orderBy]);
+   
+  if(orderBy){
+    updatedRows=updatedRows?.sort((a, b) => {
+      // console.log(orderBy, a,b);
+      let aValue;
+      let bValue;
       if (orderBy === "performance") {
-        let aPerformance = getUserPerformance(
-          a.unit,
-          a.distance,
-          a.time
-        ).toFixed(2);
-        let bPerformance = getUserPerformance(
-          b.unit,
-          b.distance,
-          b.time
-        ).toFixed(2);
-        if (aPerformance > bPerformance) {
-          return order === "asc" ? 1 : -1;
-        } else {
-          return order === "asc" ? -1 : 1;
-        }
+        aValue = Number(getUserPerformance(a.unit, a.distance, a.time).toFixed(2));
+        bValue = Number(getUserPerformance(b.unit, b.distance, b.time).toFixed(2));
+      }
+      else if (orderBy === "distance") {
+        aValue =a.unit === "Kms" ? Number(a[orderBy]) * 1000 : Number(a[orderBy]);
+        bValue =b.unit === "Kms" ? Number(b[orderBy]) * 1000 : Number(b[orderBy]);
+      } else if (orderBy === "time") {
+        aValue = Number(a[orderBy]);
+        bValue = Number(b[orderBy]);
+      }
+      else{
+        aValue=a[orderBy] || '';
+        bValue=b[orderBy] || '';
+        console.log(order,orderBy,aValue,bValue);
+      }
+      if (aValue > bValue) {
+        return order === "asc" ? 1 : -1;
       } else {
-        if (a[orderBy] > b[orderBy]) {
-          return order === "asc" ? 1 : -1;
-        } else {
-          return order === "asc" ? -1 : 1;
-        }
+        return order === "asc" ? -1 : 1;
       }
     });
 
+  }
   const getAllActivity = async () => {
     dispatch(fetchActivities());
   };
 
-
   const addToDashboard = (activityid) => {
-    dispatch(updateDashboardActivityStatus({activityid,status:true}));
+    dispatch(updateDashboardActivityStatus({ activityid, status: true }));
     toast.success("Activity Added !");
   };
   const removeFromDashboard = (activityid) => {
-    dispatch(updateDashboardActivityStatus({activityid,status:false}));
-   toast.info("Activity Removed !");
+    dispatch(updateDashboardActivityStatus({ activityid, status: false }));
+    toast.info("Activity Removed !");
   };
   const deleteUserActivity = async (activityid) => {
-     dispatch(deleteActivity(activityid));
-     toast.success("Activity Completely Deleted !");
-     setActivities(
+    dispatch(deleteActivity(activityid));
+    toast.success("Activity Completely Deleted !");
+    setActivities(
       activities.filter(
         (activity) => Number(activity.activityid) !== activityid
       )
@@ -188,7 +193,7 @@ const PerformanceTable = () => {
     return speedPerformance;
   }
 
- console.log(activities);
+   console.log(activities,updatedRows,orderBy);
 
   return (
     <>

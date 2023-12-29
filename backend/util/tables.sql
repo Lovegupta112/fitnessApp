@@ -23,5 +23,6 @@ CREATE TABLE IF NOT EXISTS activity(
    time VARCHAR(255) NOT NULL,
    unit VARCHAR(100) NOT NULL,
    dashboardstatus BOOLEAN DEFAULT false,
+   createdAt VARCHAR(255),
    userid INT REFERENCES users(userId)
 );

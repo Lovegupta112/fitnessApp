@@ -32,21 +32,31 @@ const Activity = ({activity}) => {
         minWidth: "300px",
         boxShadow:'1px 1px 6px grey',
         borderRadius:'10px',
-
-    }}>
-    <Stack
-      sx={{
-       
+         transition:'all 0.3s',
         "&:hover": {
           filter: "brightness(90%)",
+          transform:"translateY(-5px)",
+          boxShadow:'1px 1px 15px grey',
         },
         "&:hover button": {
           visibility: "visible",
           zIndex: "10000",
         },
+
+    }}>
+    <Stack
+      sx={{
+       
+        // "&:hover": {
+        //   filter: "brightness(90%)",
+        // },
+        // "&:hover button": {
+        //   visibility: "visible",
+        //   zIndex: "10000",
+        // },
         overflow: "hidden",
         position: "relative",
-        // borderRadius: "10px",
+        borderRadius: "10px 10px 0 0",
         // justifyContent:'space-between'
         "&:hover>div": {
             transform: "scale(1.04)",

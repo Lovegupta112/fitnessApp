@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import Activity from "../components/Acivity/Activity";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchActivities } from "../app/features/activitySlice";
+import { checkAuthentication } from "../app/features/authSlice";
+import axios from "axios";
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const DashboardPage = () => {
   const [activities, setActivities] = useState([]);
@@ -10,11 +13,18 @@ const DashboardPage = () => {
   const { userActivities } = useSelector(
     (state) => state.activity
   );
+  const auth=useSelector((state)=>state.auth);
+  const user=useSelector((state)=>state.user);
+
   const dispatch=useDispatch();
+  console.log('userActivities: ',userActivities);
 
 useEffect(()=>{
+  // dispatch(checkAuthentication());
 dispatch(fetchActivities());
-},[])
+},[]);
+
+
   useEffect(() => {
     setActivities(userActivities);
     const anyActivity=userActivities.find((activity)=>activity.dashboardstatus===true);
@@ -26,7 +36,7 @@ dispatch(fetchActivities());
     }
   }, [userActivities]);
 
-  console.log('dashboard activities: ',activities);
+  // console.log('dashboard activities: ',activities);
   return (
     <Stack
       sx={{

@@ -99,13 +99,39 @@ const MeasurePerformance = () => {
         <AccordionDetails
           sx={{ padding: "2rem", boxShadow: "1px 1px 4px grey", width: "100%" }}
         >
-          {selectedActivities.length <= 0 ? (
+          {/* {selectedActivities.length <= 0 ? (
             <Typography>
               Please Select Your Favorite Activity from Favorite Section ...{" "}
             </Typography>
           ) : (
-            <Stack>
-              <Stack direction="row" gap={2}>
+            <Stack gap={4} justifyContent='center' sx={{
+              alignItems:'center'
+             }}>
+               <Stack direction="row" gap={2} justifyContent='space-around'>
+               <CustomDropdown
+                 name="Your Favorite Activity"
+                 menuItems={selectedActivities}
+                 id="activityName"
+               />
+               <CustomDropdown
+                 name="Unit"
+                 menuItems={activity.currentActivity.activityName==='swimming' ? ["mtr"]:["Kms"]}
+                 id="unit"
+               />
+               <CustomDropdown
+                 name="Distance"
+                 menuItems={activity.currentActivity.unit==='Kms'?[0.5, 1, 2, 3, 4, 5, 10, 15, 20]:[100,200,300,400,500,600,1000]}
+                 id="distance"
+               />
+             </Stack>
+             {showTimer && <Timer />}
+             </Stack>
+          )} */}
+
+<Stack gap={4} justifyContent='center' sx={{
+             alignItems:'center'
+            }}>
+              <Stack direction="row" gap={2} justifyContent='space-around'>
               <CustomDropdown
                 name="Your Favorite Activity"
                 menuItems={selectedActivities}
@@ -124,7 +150,6 @@ const MeasurePerformance = () => {
             </Stack>
             {showTimer && <Timer />}
             </Stack>
-          )}
         </AccordionDetails>
       </Accordion>
     </Box>

@@ -9,7 +9,9 @@ WHERE userid=$9 RETURNING *
 
 const getUserInfoUsingUseridQuery = `SELECT * FROM users WHERE userid=$1;`;
 
-const addActivityQuery = `INSERT INTO activity (activityName,distance,time,unit,userid) VALUES ($1, $2, $3, $4, $5) RETURNING *;`;
+const getUserInfoUsingAdharcardQuery=`SELECT * FROM users WHERE adharcard=$1`;
+
+const addActivityQuery = `INSERT INTO activity (activityName,distance,time,unit,userid,createdAt) VALUES ($1, $2, $3, $4, $5,$6) RETURNING *;`;
 
 const getUserActivityQuery = `SELECT * FROM activity WHERE activity.userid=$1`;
 
@@ -26,4 +28,5 @@ module.exports = {
   getUserActivityQuery,
   deleteUserActivityQuery,
   setDashboardActivityStatusQuery,
+  getUserInfoUsingAdharcardQuery
 };

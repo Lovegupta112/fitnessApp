@@ -11,6 +11,8 @@ export default function CustomDropdown({ name, menuItems, id }) {
   const currentActivity = useSelector(
     (state) => state.activity.currentActivity
   );
+  const {isTimerRunning}=useSelector((state)=>state.timer);
+  console.log('isTimerRunning: ',isTimerRunning);
   const dispatch = useDispatch();
   console.log(currentActivity);
 
@@ -43,6 +45,7 @@ export default function CustomDropdown({ name, menuItems, id }) {
       <FormControl
         variant="standard"
         sx={{ m: 1, minWidth: 120, width: "200px" }}
+        disabled={isTimerRunning?true:false}
       >
         <InputLabel id="select-component">{name}</InputLabel>
         <Select
