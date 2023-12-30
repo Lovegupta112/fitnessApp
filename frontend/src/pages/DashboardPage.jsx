@@ -84,8 +84,11 @@ console.log('calling getActivityData function..',dataLoadedNo);
   // console.log('dashboard activities: ',activities);
   return (
     <Stack
-      padding={2}
+      padding={3}
       gap={2}
+      sx={{
+        paddingTop:'15vh'
+      }}
     >
       {isDashboardActivityExist ? (
         <>
@@ -101,8 +104,8 @@ console.log('calling getActivityData function..',dataLoadedNo);
             width:'100%',
             // border:'1px solid red',
             flexWrap:'wrap',
-            // justifyContent:'space-between',
-            rowGap:'4rem'
+            justifyContent:'space-evenly',
+            rowGap:'6rem'
           }}>
             {activities.filter((activity) =>activity.dashboardstatus===true).map((activity)=>( <Activity key={activity.activityid} activity={activity} />))}
           </Stack>

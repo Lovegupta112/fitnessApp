@@ -30,6 +30,7 @@ const Homepage = () => {
   return (
     <Stack  sx={{
       minHeight: "calc(100vh - 10vh)",
+      paddingTop:'10vh'
     }}
     padding={2}
     gap={2}

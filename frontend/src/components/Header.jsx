@@ -61,6 +61,10 @@ const Header = () => {
         backgroundColor: "black",
         boxShadow: "2px 2px 10px grey",
         color: "white",
+        position:'fixed',
+        width:'100%',
+        top:0,
+        zIndex:'99999',
       }}
       alignItems="center"
       justifyContent="space-between"

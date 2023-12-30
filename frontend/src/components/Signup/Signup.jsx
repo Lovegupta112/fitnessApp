@@ -116,7 +116,7 @@ const Signup = () => {
         border: "2px solid black",
         width: "50%",
         padding: "2rem",
-        margin: "2rem auto",
+        margin: "7rem auto",
         boxShadow: "1px 1px 10px grey",
       }}
       gap={2}

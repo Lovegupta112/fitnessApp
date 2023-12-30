@@ -47,6 +47,7 @@ const ActivityPage = () => {
     <Stack
       sx={{
         minHeight: "calc(100vh - 10vh)",
+        paddingTop:'13vh'
       }}
       padding={4}
       gap={2}

@@ -8,6 +8,7 @@ const PerformancePage = () => {
     <Stack
       sx={{
         minHeight: "calc(100vh - 10vh)",
+        paddingTop:'12vh'
       }}
       padding={2}
       gap={2}

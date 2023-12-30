@@ -71,7 +71,7 @@ const Login = () => {
         border: "2px solid black",
         width: "40%",
         padding: "2rem",
-        margin: "3rem auto",
+        margin: "8rem auto",
         boxShadow: "1px 1px 10px grey",
       }}
       gap={2}

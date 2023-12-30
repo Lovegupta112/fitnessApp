@@ -17,6 +17,7 @@ const ProfilePage = () => {
       sx={{
         // border:'1px solid black',
         minHeight: "calc(100vh - 10vh)",
+        paddingTop:'12vh'
       }}
       padding={2}
     >
