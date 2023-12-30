@@ -124,7 +124,6 @@ const activitySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchActivities.fulfilled, (state, action) => {
-      console.log(action.payload);
       
       state.userActivities = action.payload?.sort((a, b)=>{
         const aValue=Number(a.createdAt);
@@ -136,6 +135,7 @@ const activitySlice = createSlice({
          return -1;
         }
      });
+     console.log('activities: ',state.userActivities);
       state.error = null;
     }),
       builder.addCase(fetchActivities.rejected, (state, action) => {

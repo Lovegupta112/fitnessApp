@@ -11,8 +11,9 @@ import {
   Button,
   Stack,
   IconButton,
+  TablePagination
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect ,useMemo } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
@@ -42,7 +43,7 @@ const headCells = [
     id: "time",
     numeric: true,
     disablePadding: false,
-    label: "Time",
+    label: "Time(sec)",
   },
   {
     id: "performance",
@@ -51,6 +52,18 @@ const headCells = [
     label: "Performance",
   },
 ];
+
+
+function getUserPerformance(unit, distance, time) {
+  console.log(unit, distance, time);
+  let speedPerformance;
+  if (unit === "kms") {
+    time = time / 3600;
+  }
+  speedPerformance = distance / time;
+  return speedPerformance;
+}
+
 
 const PerformanceTableHead = (props) => {
   const { order, orderBy, onRequestSort } = props;
@@ -63,14 +76,6 @@ const PerformanceTableHead = (props) => {
     <>
       <TableHead>
         <TableRow>
-          <TableCell
-            sx={{
-              fontWeight: "bold",
-              fontSize: "1.4rem",
-            }}
-          >
-            S.No
-          </TableCell>
           {headCells.map((headCell) => (
             <TableCell
               key={headCell.id}
@@ -104,6 +109,9 @@ const PerformanceTable = () => {
   const [orderBy, setOrderBy] = useState("");
   const [activities, setActivities] = useState([]);
   // const [addedActivities, setAddedActivities] = useState([]);
+  const [page,setPage]=useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const dispatch = useDispatch();
   const { userActivities } = useSelector((state) => state.activity);
   const { selectedActivity } = useSelector((state) => state.filter);
@@ -124,16 +132,22 @@ const PerformanceTable = () => {
     setActivities(userActivities);
   }, [userActivities]);
 
+  const getAllActivity = async () => {
+    dispatch(fetchActivities());
+  };
+
+  console.log('activities: ',activities);
+
   // const selected = activities?.filter((activity) =>
   //   activity.activityname?.includes(selectedActivity)
   // );
   // console.log("selected: ",selected);
 
-  let updatedRows = activities
-    ?.filter((activity) => activity.activityname?.includes(selectedActivity))
+  let visibleRows = useMemo(()=>activities
+    ?.filter((activity) => activity.activityname?.includes(selectedActivity)).slice(page*rowsPerPage,page*rowsPerPage+rowsPerPage),[page,selectedActivity,rowsPerPage,activities]);
    
   if(orderBy){
-    updatedRows=updatedRows?.sort((a, b) => {
+    visibleRows=visibleRows?.sort((a, b) => {
       // console.log(orderBy, a,b);
       let aValue;
       let bValue;
@@ -151,7 +165,7 @@ const PerformanceTable = () => {
       else{
         aValue=a[orderBy] || '';
         bValue=b[orderBy] || '';
-        console.log(order,orderBy,aValue,bValue);
+        // console.log(order,orderBy,aValue,bValue);
       }
       if (aValue > bValue) {
         return order === "asc" ? 1 : -1;
@@ -161,10 +175,25 @@ const PerformanceTable = () => {
     });
 
   }
-  const getAllActivity = async () => {
-    dispatch(fetchActivities());
-  };
+// console.log('updated',updatedRows);
 
+  const emptyRows =
+  page > 0 ? Math.max(0, (1 + page) * rowsPerPage - activities.length) : 0;
+
+// const visibleRows = useMemo(
+//   () =>{
+//     return updatedRows.slice(
+//       page * rowsPerPage,
+//       page * rowsPerPage + rowsPerPage,
+//     )
+//   }
+//     ,
+//   [order, orderBy, page, rowsPerPage,selectedActivity,activities],
+// );
+
+
+
+  
   const addToDashboard = (activityid) => {
     dispatch(updateDashboardActivityStatus({ activityid, status: true }));
     toast.success("Activity Added !");
@@ -183,17 +212,19 @@ const PerformanceTable = () => {
     );
   };
 
-  function getUserPerformance(unit, distance, time) {
-    console.log(unit, distance, time);
-    let speedPerformance;
-    if (unit === "kms") {
-      time = time / 3600;
-    }
-    speedPerformance = distance / time;
-    return speedPerformance;
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage=(event)=>{
+   setRowsPerPage(Number(event.target.value));
+   setPage(0);
   }
 
-   console.log(activities,updatedRows,orderBy);
+
+  
+
+   console.log('hii',visibleRows,orderBy);
 
   return (
     <>
@@ -207,10 +238,11 @@ const PerformanceTable = () => {
                 onRequestSort={handleRequestSort}
               />
               <TableBody>
-                {updatedRows?.map((row, index) => {
+                {/* {updatedRows?.map((row, index) => { */}
+                {visibleRows?.map((row, index) => {
                   return (
                     <TableRow key={index}>
-                      <TableCell>{index + 1}</TableCell>
+                      {/* <TableCell>{index + 1}</TableCell> */}
                       <TableCell>{row.activityname}</TableCell>
                       <TableCell>
                         {row.distance}
@@ -259,8 +291,22 @@ const PerformanceTable = () => {
                     </TableRow>
                   );
                 })}
+                {emptyRows > 0 && (
+                  <TableRow style={{height:33*emptyRows}}>
+                   <TableCell colSpan={6} />
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
+            <TablePagination 
+            rowsPerPageOptions={[4,5]}
+             rowsPerPage={rowsPerPage}
+             component='div'
+             count={userActivities.length}
+             page={page}
+             onPageChange={handleChangePage}
+             onRowsPerPageChange={handleChangeRowsPerPage}
+            />
           </TableContainer>
         </Stack>
       </Box>

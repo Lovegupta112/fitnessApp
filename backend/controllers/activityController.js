@@ -31,6 +31,9 @@ const addUserActivity = async (req, res) => {
 const getUserActivity = async (req, res) => {
   try {
     const userid = req.userid;
+    // const pageNo=req.query.page || 1;
+    // const startInd=(pageNo-1)*6;
+    // const endInd=startInd+6;
     const activity = await query(getUserActivityQuery, [userid]);
     console.log("userActivity: ", activity.rows[0]);
     res.status(200).json(activity.rows);
