@@ -299,7 +299,10 @@ const PerformanceTable = () => {
                 )}
               </TableBody>
             </Table>
-           {visibleRows.length>0 ? <TablePagination 
+            {visibleRows.length<=0 && 
+            <Typography sx={{fontSize:'1.3rem',margin:'1rem',textAlign:'center'}}>No User Activity Found !</Typography>
+            }
+            <TablePagination 
             rowsPerPageOptions={[4,5]}
              rowsPerPage={rowsPerPage}
              component='div'
@@ -307,9 +310,8 @@ const PerformanceTable = () => {
              page={page}
              onPageChange={handleChangePage}
              onRowsPerPageChange={handleChangeRowsPerPage}
-            />: 
-            <Typography sx={{fontSize:'1.3rem',margin:'1rem',textAlign:'center'}}>No User Activity Found !</Typography>
-            }
+            />
+        
           </TableContainer>
         </Stack>
       </Box>
