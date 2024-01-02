@@ -26,7 +26,7 @@ return (
     <Route path="signup" element={<Signup/>}/> 
     <Route path="login" element={<Login />} />
    </Routes>
-   <ToastContainer/>
+   <ToastContainer style={{top:'100px'}}/>
   </>
 )
 }
