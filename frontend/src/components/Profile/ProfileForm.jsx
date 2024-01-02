@@ -128,7 +128,7 @@ const ProfileForm = () => {
          console.log(errorType);
          let customError='';
          if(errorType==='"users_adharcard_key"'){
-          customError=`${userInfo.adharcard} Adharcard no Already Exist !`;
+          customError=`${userInfo.adharcard} Adharcard Number Already Exist !`;
          }
          else if(errorType==='"users_email_key"'){
           customError=`${userInfo.email} email id Already Exist !`

@@ -1,9 +1,9 @@
-const Joi=require('joi');
+// const Joi=require('joi');
 
 const validateSchema=(schema)=>{
 return (req,res,next)=>{
     try{
-        console.log('request: ',req.body);
+        console.log('requestBody: ',req.body);
     const data=schema.validate(req.body);
     console.log('data: ',data);
     const {error}=data;

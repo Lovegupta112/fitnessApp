@@ -104,7 +104,7 @@ console.log('calling getActivityData function..',dataLoadedNo);
             width:'100%',
             // border:'1px solid red',
             flexWrap:'wrap',
-            justifyContent:'space-evenly',
+            // justifyContent:'space-evenly',
             rowGap:'6rem'
           }}>
             {activities.filter((activity) =>activity.dashboardstatus===true).map((activity)=>( <Activity key={activity.activityid} activity={activity} />))}
