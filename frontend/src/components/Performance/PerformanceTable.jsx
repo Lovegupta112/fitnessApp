@@ -11,7 +11,8 @@ import {
   Button,
   Stack,
   IconButton,
-  TablePagination
+  TablePagination,
+  Typography
 } from "@mui/material";
 import { useState, useEffect ,useMemo } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -298,7 +299,7 @@ const PerformanceTable = () => {
                 )}
               </TableBody>
             </Table>
-            <TablePagination 
+           {visibleRows.length>0 ? <TablePagination 
             rowsPerPageOptions={[4,5]}
              rowsPerPage={rowsPerPage}
              component='div'
@@ -306,7 +307,9 @@ const PerformanceTable = () => {
              page={page}
              onPageChange={handleChangePage}
              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+            />: 
+            <Typography sx={{fontSize:'1.3rem',margin:'1rem',textAlign:'center'}}>No User Activity Found !</Typography>
+            }
           </TableContainer>
         </Stack>
       </Box>
