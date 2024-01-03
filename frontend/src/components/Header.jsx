@@ -102,6 +102,9 @@ const Header = () => {
             <Link to={"/dashboard"}>
               <Typography>Dashboard</Typography>
             </Link>
+            <Link to={"/communities"}>
+              <Typography>Communities</Typography>
+            </Link>
             <Link to={"/activity"}>
               <Typography>Activity</Typography>
             </Link>

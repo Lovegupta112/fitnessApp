@@ -26,3 +26,14 @@ CREATE TABLE IF NOT EXISTS activity(
    createdAt VARCHAR(255),
    userid INT REFERENCES users(userId)
 );
+
+--connection table 
+
+CREATE TABLE IF NOT EXISTS connections(
+   id SERIAL PRIMARY KEY,
+   acceptedRequest BOOLEAN DEFAULT false,
+   createdAt VARCHAR(255),
+   connectionid INT REFERENCES users(userId),
+   senderId INT REFERENCES users(userId)
+);
+

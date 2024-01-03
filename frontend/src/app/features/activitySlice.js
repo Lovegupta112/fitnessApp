@@ -6,6 +6,7 @@ const initialState = {
   currentActivity: { activityName: "", distance: "", time: "", unit: "" },
   userActivities: [],
   error: null,
+  allActivities:[],
 };
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
@@ -93,6 +94,16 @@ export const updateDashboardActivityStatus = createAsyncThunk(
   }
 );
 
+export const fetchAllActivities=createAsyncThunk("activity/fetchAllActivities",async()=>{
+  try{
+     const res=await axios.get('/activity/getAllActivities');
+     return res.data;
+  }
+  catch (error) {
+    throw error.message;
+  }
+})
+
 const activitySlice = createSlice({
   name: "activity",
   initialState,
@@ -163,7 +174,7 @@ const activitySlice = createSlice({
       }),
       builder.addCase(addActivity.rejected, (state, action) => {
         state.error = action.error;
-      });
+      }),
     builder.addCase(
       updateDashboardActivityStatus.fulfilled,
       (state, action) => {
@@ -176,10 +187,17 @@ const activitySlice = createSlice({
         });
         state.error = null;
       }
-    );
+    ),
     builder.addCase(updateDashboardActivityStatus.rejected, (state, action) => {
       state.error = action.error;
-    });
+    }),
+    builder.addCase(fetchAllActivities.fulfilled, (state, action) => {
+      state.allActivities.push(action.payload);
+      state.error=null;
+    }),
+    builder.addCase(fetchAllActivities.rejected, (state, action) => {
+      state.error = action.error;
+    })
   },
 });
 

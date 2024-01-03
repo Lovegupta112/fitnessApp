@@ -8,7 +8,8 @@ const {
   signupQuery,
   updateUserInfoQuery,
   getUserInfoUsingUseridQuery,
-  getUserInfoUsingAdharcardQuery
+  getUserInfoUsingAdharcardQuery,
+  getAllUsersIfActivityExistQuery
 } = require("../util/queries");
 
 const signup = async (req, res) => {
@@ -136,4 +137,20 @@ const getUserInfo = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, updateUserInfo, logout, getUserInfo };
+
+const getAllUsersIfActivityExist=async (req,res)=>{
+  try{
+    const userid=req.userid;
+    console.log('userid:---',userid);
+    const users=await query(getAllUsersIfActivityExistQuery,[userid]);
+    console.log('usersWithActivity: ',users);
+    res.status(200).json(users.rows);
+  }
+  catch(error){
+    console.log("Error: ", error);
+    res.status(500).json({ message: error.message });
+  }
+}
+
+
+module.exports = { signup, login, updateUserInfo, getUserInfo ,getAllUsersIfActivityExist};

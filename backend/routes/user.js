@@ -8,6 +8,7 @@ const userSchema=require('../models/userSchema');
 router.post('/signup',validateSchema(userSchema.signupSchema),userController.signup);
 router.post('/login',validateSchema(userSchema.loginSchema),userController.login)
 router.put('/updateInfo',validateSchema(userSchema.userUpdationSchema),userController.updateUserInfo);
-router.get('/logout',userController.logout);
+// router.get('/logout',userController.logout);
 router.get('/userInfo',auth,userController.getUserInfo);
+router.get('/getAllUsersIfActivityExist',auth,userController.getAllUsersIfActivityExist);
 module.exports=router;

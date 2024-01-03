@@ -19,6 +19,23 @@ const deleteUserActivityQuery = `DELETE FROM activity WHERE activityid=$1`;
 
 const setDashboardActivityStatusQuery = `UPDATE activity SET dashboardStatus=$1 WHERE activityid=$2 RETURNING *`;
 
+// const getAllUsersIfActivityExistQuery=`SELECT DISTINCT username,activity.userid FROM activity JOIN users ON activity.userid=users.userid WHERE users.userid!=$1`;
+
+const getAllUsersIfActivityExistQuery=`SELECT DISTINCT u.userid,u.username, c.acceptedrequest, c.senderid, c.connectionid,c.createdat
+FROM users u
+JOIN activity  a ON u.userid = a.userid
+LEFT JOIN connections c ON (u.userid = c.senderid OR u.userid = c.connectionid) 
+AND (c.senderid = $1  OR c.connectionid = $1 )
+WHERE u.userid !=$1 `;
+
+const addConnectionQuery=`INSERT INTO connections (senderid,connectionid,acceptedrequest,createdat) VALUES ($1,$2,$3,$4) RETURNING *;`
+
+const deleteRequestQuery=`DELETE FROM connections WHERE senderid=$1 AND connectionid=$2 RETURNING *`;
+
+const acceptRequestQuery=`UPDATE connections
+SET acceptedrequest=$3
+WHERE senderid=$1 AND connectionid=$2 RETURNING *;`
+
 module.exports = {
   getUserInfoUsingEmailQuery,
   signupQuery,
@@ -28,5 +45,9 @@ module.exports = {
   getUserActivityQuery,
   deleteUserActivityQuery,
   setDashboardActivityStatusQuery,
-  getUserInfoUsingAdharcardQuery
+  getUserInfoUsingAdharcardQuery,
+  getAllUsersIfActivityExistQuery,
+  addConnectionQuery,
+  deleteRequestQuery,
+  acceptRequestQuery
 };

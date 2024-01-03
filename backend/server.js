@@ -8,6 +8,7 @@ const port=process.env.PORT || 3000;
 const auth=require('./middlewares/auth');
 // const protectedRouter=require('./routes/protected');
 const activityRouter=require('./routes/activity');
+const connectionRouter=require('./routes/connection');
 
 
 app.use(express.json());
@@ -19,6 +20,7 @@ app.use(cookieParser());
 
 app.use('/users',userRouter);
 app.use('/activity',auth,activityRouter);
+app.use('/connection',auth,connectionRouter);
 // app.use('/protected',auth,protectedRouter);
 app.listen(port,()=>{
     console.log(`Server is listening on port : ${port}`);

@@ -11,6 +11,7 @@ import ActivityPage from './pages/ActivityPage';
 import PerformancePage from './pages/PerformancePage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import CommunityPage from './pages/CommunityPage';
 
 const App=()=>{
 
@@ -20,6 +21,7 @@ return (
    <Routes>
     <Route path='/' element={ <Homepage/>} />
     <Route path='/dashboard' element={<Protected Component={DashboardPage}/>} />
+    <Route path='/communities' element={<Protected Component={CommunityPage}/>} />
     <Route path='/profile' element={<Protected Component={ProfilePage}/>} />
     <Route path='/activity' element={<Protected Component={ActivityPage} />} />
     <Route path='/performance' element={<Protected Component={PerformancePage} />} />

@@ -43,6 +43,7 @@ const getUserActivity = async (req, res) => {
   }
 };
 
+
 const deleteUserActivity = async (req, res) => {
   try {
     const activityid = req.params.activityid;
