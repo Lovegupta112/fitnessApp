@@ -5,8 +5,8 @@ const initialState = {
   selectedActivity: {},
   currentActivity: { activityName: "", distance: "", time: "", unit: "" },
   userActivities: [],
+  connectionActivities: [],
   error: null,
-  allActivities:[],
 };
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
@@ -18,6 +18,25 @@ export const fetchActivities = createAsyncThunk(
     try {
       const token = localStorage.getItem("jwt-token");
       const res = await axios.get("/activity/getActivities", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // console.log();
+      return res.data;
+    } catch (error) {
+      throw error.message;
+    }
+  }
+);
+
+export const fetchConnectionActivities = createAsyncThunk(
+  "activity/fetchConnectionActivities",
+  async (userid) => {
+    try {
+      console.log("request for activitiy userid: ",userid);
+      const token = localStorage.getItem("jwt-token");
+      const res = await axios.get(`/activity/getConnectionActivities/${userid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -93,16 +112,6 @@ export const updateDashboardActivityStatus = createAsyncThunk(
     }
   }
 );
-
-export const fetchAllActivities=createAsyncThunk("activity/fetchAllActivities",async()=>{
-  try{
-     const res=await axios.get('/activity/getAllActivities');
-     return res.data;
-  }
-  catch (error) {
-    throw error.message;
-  }
-})
 
 const activitySlice = createSlice({
   name: "activity",
@@ -191,13 +200,25 @@ const activitySlice = createSlice({
     builder.addCase(updateDashboardActivityStatus.rejected, (state, action) => {
       state.error = action.error;
     }),
-    builder.addCase(fetchAllActivities.fulfilled, (state, action) => {
-      state.allActivities.push(action.payload);
-      state.error=null;
+    builder.addCase(fetchConnectionActivities.fulfilled, (state, action) => {
+      
+      state.connectionActivities = action.payload?.sort((a, b)=>{
+        const aValue=Number(a.createdAt);
+        const bValue=Number(b.createdAt);
+        if(aValue>bValue){
+         return 1;
+        }
+        else {
+         return -1;
+        }
+     });
+     console.log('activities: ',state.connectionActivities);
+      state.error = null;
     }),
-    builder.addCase(fetchAllActivities.rejected, (state, action) => {
-      state.error = action.error;
-    })
+      builder.addCase(fetchConnectionActivities.rejected, (state, action) => {
+        state.error = action.error;
+      })
+
   },
 });
 

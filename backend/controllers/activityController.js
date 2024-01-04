@@ -43,6 +43,20 @@ const getUserActivity = async (req, res) => {
   }
 };
 
+const getConnectionUserActivity = async (req, res) => {
+  try {
+    const userid = req.params.userid;
+    // const pageNo=req.query.page || 1;
+    // const startInd=(pageNo-1)*6;
+    // const endInd=startInd+6;
+    const activity = await query(getUserActivityQuery, [userid]);
+    console.log("userActivity: ", activity.rows[0]);
+    res.status(200).json(activity.rows);
+  } catch (error) {
+    console.log("Error: ", error);
+    res.status(500).json({ message: error.message });
+  }
+};
 
 const deleteUserActivity = async (req, res) => {
   try {
@@ -81,4 +95,5 @@ module.exports = {
   getUserActivity,
   deleteUserActivity,
   setDashboardActivityStatus,
+  getConnectionUserActivity
 };

@@ -2,13 +2,16 @@ import {useState} from 'react';
 import { Stack, Typography,Button } from '@mui/material';
 import { useDispatch,useSelector } from 'react-redux';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { cancelConnection } from '../../app/features/connectionSlice';
+import { cancelConnection,addCurrentConnectionDetails } from '../../app/features/connectionSlice';
+import {useNavigate} from 'react-router-dom';
 
 const Connections = () => {
 
     const dispatch=useDispatch();
     const {users}=useSelector((state)=>state.connection);
     const currentUser=useSelector((state)=>state.user);
+    const navigate=useNavigate();
+    
 
     console.log('users: ',users);
     const connectionList=users.filter((userObj)=>(userObj.connectionid===currentUser.userid || userObj.senderid===currentUser.userid )&& userObj.acceptedrequest===true);
@@ -16,6 +19,12 @@ const Connections = () => {
     const removeConnection=(connection)=>{
         console.log('Removing connection: ',connection);
         dispatch(cancelConnection({connectionid:connection.connectionid,senderid:connection.senderid}));
+    }
+
+    const showActivities=(connection)=>{
+      console.log('showing activities ...',connection);
+      dispatch(addCurrentConnectionDetails(connection));
+      navigate(`/dashboard/${connection.userid}`);
     }
   return (
     <Stack gap={2}>
@@ -27,7 +36,7 @@ const Connections = () => {
                 boxShadow:'1px 1px 15px grey',
                 cursor:'pointer',
                }}} justifyContent='space-between' alignItems='center' >
-                         <Stack direction='row' gap={2} alignItems='center'>
+                         <Stack direction='row' gap={2} alignItems='center'onClick={()=>showActivities(connection)}>
                            <AccountCircleIcon  fontSize='large'/>
                             <Typography fontSize='1.4rem'>{connection.username}</Typography>
                          </Stack>

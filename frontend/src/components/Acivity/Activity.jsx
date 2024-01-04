@@ -6,17 +6,19 @@ import swimming from "../../../public/swimming.jpg";
 import walking from "../../../public/walking.jpg";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { updateDashboardActivityStatus } from "../../app/features/activitySlice";
-import { useDispatch } from "react-redux";
+import { useDispatch ,useSelector} from "react-redux";
 import {toast} from 'react-toastify';
 
 const Activity = ({activity}) => {
   const dispatch=useDispatch();
-
+  const user=useSelector((state)=>state.user);
   const handleClick = (activityid) => {
     console.log("activity removed  !");
     dispatch(updateDashboardActivityStatus({activityid,status:false}));
     toast.info("Activity Removed !");
   };
+
+
 
   const images={
     cycling,
@@ -64,7 +66,7 @@ const Activity = ({activity}) => {
           },
       }}
     >
-      <IconButton
+     {user.userid===activity.userid &&  <IconButton
         aria-label="delete"
         sx={{
           color: "white",
@@ -85,7 +87,7 @@ const Activity = ({activity}) => {
         onClick={()=>handleClick(activity.activityid)}
       >
         <DeleteIcon />
-      </IconButton>
+      </IconButton>}
 
       <Stack
         sx={{

@@ -12,6 +12,7 @@ import PerformancePage from './pages/PerformancePage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CommunityPage from './pages/CommunityPage';
+import NoMatchPageUi from './pages/NoMatchPageUi';
 
 const App=()=>{
 
@@ -21,12 +22,14 @@ return (
    <Routes>
     <Route path='/' element={ <Homepage/>} />
     <Route path='/dashboard' element={<Protected Component={DashboardPage}/>} />
+    <Route path='/dashboard/:userid' element={<Protected Component={DashboardPage}/>} />
     <Route path='/communities' element={<Protected Component={CommunityPage}/>} />
     <Route path='/profile' element={<Protected Component={ProfilePage}/>} />
     <Route path='/activity' element={<Protected Component={ActivityPage} />} />
     <Route path='/performance' element={<Protected Component={PerformancePage} />} />
     <Route path="signup" element={<Signup/>}/> 
     <Route path="login" element={<Login />} />
+    <Route path="*" element={<NoMatchPageUi />} />
    </Routes>
    <ToastContainer style={{top:'100px'}}/>
   </>

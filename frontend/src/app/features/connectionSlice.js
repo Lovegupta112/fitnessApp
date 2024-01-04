@@ -5,7 +5,7 @@ axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 const initialState = {
   users: [],
   error: null,
-  activities: {},
+  currentConnectionDetails:'',
 };
 
 export const fetchUsersIfActivityExist = createAsyncThunk(
@@ -93,14 +93,14 @@ export const acceptRequest = createAsyncThunk(
   }
 );
 
-/*
-
-{userid: 56, username: 'user', acceptedrequest: false, senderid: 56, connectionid: 9}
-
-*/
 const connectionSlice = createSlice({
   name: "connection",
   initialState,
+  reducers:{
+    addCurrentConnectionDetails:(state,action)=>{
+     state.currentConnectionDetails=action.payload;
+    }
+   },
   extraReducers: (builder) => {
     builder.addCase(fetchUsersIfActivityExist.fulfilled, (state, action) => {
       const data = action.payload;
@@ -160,4 +160,5 @@ const connectionSlice = createSlice({
   },
 });
 
+export const {addCurrentConnectionDetails}=connectionSlice.actions;
 export default connectionSlice.reducer;
