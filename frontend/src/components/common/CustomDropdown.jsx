@@ -5,16 +5,18 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentActivity } from "../../app/features/activitySlice";
+import { updateTimer } from "../../app/features/timerSlice";
 
 export default function CustomDropdown({ name, menuItems, id }) {
   const [favoriteActivity, setFavoriteActivity] = useState("");
-  const currentActivity = useSelector(
-    (state) => state.activity.currentActivity
+  const {currentActivity,selectedActivity} = useSelector(
+    (state) => state.activity
   );
+
   const {isTimerRunning}=useSelector((state)=>state.timer);
   console.log('isTimerRunning: ',isTimerRunning);
   const dispatch = useDispatch();
-  console.log(currentActivity);
+  console.log(currentActivity,selectedActivity);
 
   useEffect(() => {
     if (id === "activityName") {
@@ -23,6 +25,10 @@ export default function CustomDropdown({ name, menuItems, id }) {
       setFavoriteActivity(currentActivity.unit);
     } else if (id === "distance") {
       setFavoriteActivity(currentActivity.distance);
+    }
+
+    if(!currentActivity.activityName){
+      dispatch(updateTimer(false));
     }
   }, [currentActivity]);
 
