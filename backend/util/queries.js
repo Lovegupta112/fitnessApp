@@ -14,6 +14,7 @@ const getUserInfoUsingAdharcardQuery=`SELECT * FROM users WHERE adharcard=$1`;
 const addActivityQuery = `INSERT INTO activity (activityName,distance,time,unit,userid,createdAt) VALUES ($1, $2, $3, $4, $5,$6) RETURNING *;`;
 
 const getUserActivityQuery = `SELECT * FROM activity WHERE activity.userid=$1`;
+const getConnectionActivityQuery= `SELECT a.*,u.username FROM activity a JOIN users u ON a.userid=u.userid JOIN connections c ON (c.senderid IN ($1,$2) AND c.connectionid IN ($1,$2))  WHERE u.userid=$2 AND c.acceptedrequest=true AND a.dashboardstatus=true`;
 
 const deleteUserActivityQuery = `DELETE FROM activity WHERE activityid=$1`;
 
@@ -49,5 +50,6 @@ module.exports = {
   getAllUsersIfActivityExistQuery,
   addConnectionQuery,
   deleteRequestQuery,
-  acceptRequestQuery
+  acceptRequestQuery,
+  getConnectionActivityQuery
 };

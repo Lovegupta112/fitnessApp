@@ -4,6 +4,7 @@ import { useDispatch,useSelector } from 'react-redux';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { cancelConnection,addCurrentConnectionDetails } from '../../app/features/connectionSlice';
 import {useNavigate} from 'react-router-dom';
+import { toast } from "react-toastify";
 
 const Connections = () => {
 
@@ -19,6 +20,7 @@ const Connections = () => {
     const removeConnection=(connection)=>{
         console.log('Removing connection: ',connection);
         dispatch(cancelConnection({connectionid:connection.connectionid,senderid:connection.senderid}));
+        toast.success('Connection Removed  SuccessFully !');
     }
 
     const showActivities=(connection)=>{

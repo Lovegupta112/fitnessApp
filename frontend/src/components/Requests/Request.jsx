@@ -4,6 +4,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 // import { acceptRequest } from '../../app/features/connectionSlice';
 import { useDispatch,useSelector } from 'react-redux';
 import { acceptRequest,cancelConnection } from '../../app/features/connectionSlice';
+import { toast } from "react-toastify";
 
 const Request = ({user}) => {
     console.log(user);
@@ -14,11 +15,13 @@ const Request = ({user}) => {
     //  dispatch(acceptRequest(user.connectionid));
     console.log(user);
     dispatch(acceptRequest({connectionid:user.connectionid,senderid:user.senderid,acceptedRequest:true}));
+    toast.success('Request Accepted SuccessFully !');
     }
 
     const rejectUserRequest=()=>{
        console.log('Rejecting Request: ',user);
        dispatch(cancelConnection({connectionid:user.connectionid,senderid:user.senderid}));
+       toast.info('Request Rejected SuccessFully !');
     }
   return (
     <>

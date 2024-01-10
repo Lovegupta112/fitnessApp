@@ -122,6 +122,7 @@ import {
     // console.log(row,user.userid);
     // dispatch(addConnection({connectionid:row.userid}));
     dispatch(addConnection({connectionid:row.userid,senderid:user.userid,acceptedrequest:false}));
+    toast.success('Connection Request Sent SuccessFully !');
     }
   
    const acceptUserRequest=(row)=>{
@@ -132,6 +133,7 @@ import {
  console.log('cancelling ..',row);
 //  dispatch(deleteRequest(row.userid));
 dispatch(cancelConnection({connectionid:row.connectionid,senderid:user.userid}));
+toast.info('Connection Cancelled  SuccessFully !');
    }
   
     return (

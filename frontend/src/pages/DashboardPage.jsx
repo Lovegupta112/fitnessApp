@@ -19,7 +19,7 @@ const DashboardPage = () => {
   const user=useSelector((state)=>state.user);
   const {userid}=useParams();
   console.log('userid: ',userid);
-  // console.log('connectionActivities: ',connectionActivities);
+  console.log('connectionActivities: ',connectionActivities);
   console.log('currentConnectionDetails: ',currentConnectionDetails,"current User: ",user);
   // const user=useSelector((state)=>state.user);
 
@@ -35,6 +35,7 @@ dispatch(fetchActivities());
 useEffect(()=>{
 if(userid){
 dispatch(fetchConnectionActivities(userid));
+
 }
 },[userid]);
 useEffect(()=>{
@@ -109,7 +110,7 @@ console.log('calling getActivityData function..',dataLoadedNo);
               fontWeight: "700",
             }}
           >
-           {userid && currentConnectionDetails.username ? `${currentConnectionDetails.username}'s Activities`:'My Activities'}
+           {userid && currentConnectionDetails.username ? `${currentConnectionDetails.username}'s Activities`:''}
           </Typography>
           <Stack direction="row" gap={4} padding={4} sx={{
             width:'100%',
@@ -122,6 +123,18 @@ console.log('calling getActivityData function..',dataLoadedNo);
             userid ? 
             connectionActivities.filter((activity) =>activity.dashboardstatus===true).map((activity)=>( <Activity key={activity.activityid} activity={activity} />))
             :activities.filter((activity) =>activity.dashboardstatus===true).map((activity)=>( <Activity key={activity.activityid} activity={activity} />))}
+            {(userid && !connectionActivities.find((activity)=>activity.dashboardstatus===true)) && 
+             <Typography
+             variant="h5"
+             color="crimson"
+             sx={{
+               margin: "4rem auto",
+               fontWeight:'700'
+             }}
+           >
+             No User Activity Found !
+           </Typography>
+            }
           </Stack>
         </>
       ) : (

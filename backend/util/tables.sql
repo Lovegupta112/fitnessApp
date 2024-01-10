@@ -36,4 +36,3 @@ CREATE TABLE IF NOT EXISTS connections(
    connectionid INT REFERENCES users(userId),
    senderId INT REFERENCES users(userId)
 );
-

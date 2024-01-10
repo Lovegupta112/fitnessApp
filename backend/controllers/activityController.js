@@ -4,6 +4,7 @@ const {
   getUserActivityQuery,
   deleteUserActivityQuery,
   setDashboardActivityStatusQuery,
+  getConnectionActivityQuery
 } = require("../util/queries");
 
 const addUserActivity = async (req, res) => {
@@ -46,10 +47,11 @@ const getUserActivity = async (req, res) => {
 const getConnectionUserActivity = async (req, res) => {
   try {
     const userid = req.params.userid;
+    const currentUserid=req.userid;
     // const pageNo=req.query.page || 1;
     // const startInd=(pageNo-1)*6;
     // const endInd=startInd+6;
-    const activity = await query(getUserActivityQuery, [userid]);
+    const activity = await query(getConnectionActivityQuery, [currentUserid,userid]);
     console.log("userActivity: ", activity.rows[0]);
     res.status(200).json(activity.rows);
   } catch (error) {

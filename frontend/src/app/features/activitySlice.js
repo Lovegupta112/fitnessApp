@@ -41,7 +41,7 @@ export const fetchConnectionActivities = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-      // console.log();
+      console.log(res.data);
       return res.data;
     } catch (error) {
       throw error.message;
@@ -155,7 +155,7 @@ const activitySlice = createSlice({
          return -1;
         }
      });
-     console.log('activities: ',state.userActivities);
+    //  console.log('activities: ',state.userActivities);
       state.error = null;
     }),
       builder.addCase(fetchActivities.rejected, (state, action) => {
