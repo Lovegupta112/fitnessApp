@@ -111,6 +111,9 @@ const Header = () => {
             <Link to={"/performance"}>
               <Typography>Performance</Typography>
             </Link>
+            <Link to={"/schedule-mentorship"}>
+              <Typography>Schedule Mentorship</Typography>
+            </Link>
             <Profile />
           </>
         )}

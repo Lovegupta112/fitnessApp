@@ -5,6 +5,7 @@ import activityReducer from "../app/features/activitySlice";
 import filterReducer from "../app/features/filterSlice";
 import timerReducer from "./features/timerSlice";
 import connectionReducer from './features/connectionSlice';
+import mentorshipReducer from './features/mentorshipSlice';
 
 
 const store = configureStore({
@@ -15,6 +16,7 @@ const store = configureStore({
     filter:filterReducer,
     timer:timerReducer,
     connection:connectionReducer,
+    mentorship:mentorshipReducer
   },
 });
 

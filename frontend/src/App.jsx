@@ -13,6 +13,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CommunityPage from './pages/CommunityPage';
 import NoMatchPageUi from './pages/NoMatchPageUi';
+import ScheduleMentorshipPage from './pages/ScheduleMentorshipPage';
 
 const App=()=>{
 
@@ -27,6 +28,7 @@ return (
     <Route path='/profile' element={<Protected Component={ProfilePage}/>} />
     <Route path='/activity' element={<Protected Component={ActivityPage} />} />
     <Route path='/performance' element={<Protected Component={PerformancePage} />} />
+    <Route path='/schedule-mentorship' element={<Protected Component={ScheduleMentorshipPage} />} />
     <Route path="signup" element={<Signup/>}/> 
     <Route path="login" element={<Login />} />
     <Route path="*" element={<NoMatchPageUi />} />

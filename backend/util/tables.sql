@@ -36,3 +36,15 @@ CREATE TABLE IF NOT EXISTS connections(
    connectionid INT REFERENCES users(userId),
    senderId INT REFERENCES users(userId)
 );
+
+-- session table 
+CREATE TABLE IF NOT EXISTS sessions (
+session_id INT GENERATED ALWAYS AS IDENTITY,
+session_date VARCHAR(50),
+session_time VARCHAR(20),
+userid INT,
+PRIMARY KEY (session_id),
+CONSTRAINT fk_user
+FOREIGN KEY (userid)
+REFERENCES users(userid)
+)
