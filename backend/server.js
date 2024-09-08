@@ -15,7 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 const corsOptions={origin:process.env.ORIGIN_URL,credentials:true}
 // const corsOptions={credentials:true}
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors());
 app.use(cookieParser());
 
 app.use('/users',userRouter);
