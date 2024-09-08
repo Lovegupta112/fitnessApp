@@ -3,12 +3,15 @@ const fsPromise = require("fs").promises;
 const path = require("path");
 require("dotenv").config();
 
+// const pool = new Pool({
+//   host: process.env.HOST,
+//   port: process.env.DB_PORT,
+//   database: process.env.DB_NAME,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASSWORD,
+// });
 const pool = new Pool({
-  host: process.env.HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+ connectionString:process.env.POSTGRES_URL
 });
 
 pool.on("connect", () => {
