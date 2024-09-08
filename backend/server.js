@@ -20,7 +20,7 @@ const corsOptions={origin:process.env.ORIGIN_URL,credentials:true}
 app.options("*",cors())//Enable CORS for all preflight requests
 app.use(cookieParser());
 
-app.get('/health',(req,res)=>res.send(200).send('Server is Healthy.'));
+app.get('/health',(req,res)=>res.status(200).send('Server is Healthy.'));
 app.use('/users',userRouter);
 app.use('/activity',auth,activityRouter);
 app.use('/connection',auth,connectionRouter);
