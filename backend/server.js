@@ -14,10 +14,8 @@ const connectionRouter=require('./routes/connection');
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 const corsOptions={origin:process.env.ORIGIN_URL,credentials:true}
-// const corsOptions={credentials:true}
-// app.use(cors(corsOptions));
-app.use(cors());
-app.options("*",cors())//Enable CORS for all preflight requests
+app.use(cors(corsOptions));
+// app.options("*",cors())//Enable CORS for all preflight requests
 app.use(cookieParser());
 
 app.get('/health',(req,res)=>res.status(200).send('Server is Healthy.'));

@@ -22,7 +22,6 @@ async function setUpTable() {
   try {
     const filePath = path.join(__dirname, "..", "util", "tables.sql");
     const sql = await fsPromise.readFile(filePath, "utf-8");
-    // console.log(sql);
     await query(sql);
   } catch (error) {
     console.log(error);
